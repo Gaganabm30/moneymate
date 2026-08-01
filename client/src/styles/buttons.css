@@ -1,0 +1,23 @@
+.mm-btn{
+
+    background:var(--primary);
+
+    color:white;
+
+    padding:14px 22px;
+
+    border-radius:14px;
+
+    font-weight:600;
+
+    transition:.25s;
+
+}
+
+.mm-btn:hover{
+
+    transform:translateY(-2px);
+
+    background:#4655e7;
+
+}

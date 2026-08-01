@@ -1,0 +1,41 @@
+.fadeUp{
+
+animation:fadeUp .8s ease forwards;
+
+}
+
+@keyframes fadeUp{
+
+from{
+
+opacity:0;
+
+transform:translateY(40px);
+
+}
+
+to{
+
+opacity:1;
+
+transform:translateY(0);
+
+}
+
+}
+
+.cardHover{
+
+transition:.3s;
+
+}
+
+.cardHover:hover{
+
+transform:translateY(-8px);
+
+box-shadow:
+
+0 35px 70px rgba(0,0,0,.1);
+
+}
