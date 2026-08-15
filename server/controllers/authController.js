@@ -10,10 +10,11 @@ const generateToken = require("../utils/generateToken");
 
 const register = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, fullName, email, password, phone, country, currency, monthlyIncome } = req.body;
+    const userName = (name || fullName || "").trim();
 
     // Check required fields
-    if (!name || !email || !password) {
+    if (!userName || !email || !password) {
       return res.status(400).json({
         success: false,
         message: "Name, email and password are required",
@@ -52,9 +53,13 @@ const register = async (req, res) => {
 
     // Create user
     const user = await User.create({
-      name: name.trim(),
+      name: userName,
       email: normalizedEmail,
       password: hashedPassword,
+      phone: phone || "",
+      country: country || "India",
+      currency: currency || "INR",
+      monthlyIncome: monthlyIncome ? Number(monthlyIncome) : 0,
     });
 
     const token = generateToken(user._id);
@@ -69,6 +74,10 @@ const register = async (req, res) => {
         id: user._id,
         name: user.name,
         email: user.email,
+        phone: user.phone,
+        country: user.country,
+        currency: user.currency,
+        monthlyIncome: user.monthlyIncome,
       },
     });
   } catch (error) {

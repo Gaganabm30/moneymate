@@ -22,7 +22,13 @@ function Goals() {
   });
 
   const load = async () => {
-    setGoals(await getGoals());
+    try {
+      const data = await getGoals();
+      setGoals(Array.isArray(data) ? data : []);
+    } catch (err) {
+      console.error("Failed to load goals:", err);
+      setGoals([]);
+    }
   };
 
   useEffect(() => {
@@ -32,24 +38,30 @@ function Goals() {
   const submit = async (event) => {
     event.preventDefault();
 
-    await createGoal({
-      ...form,
-      targetAmount: Number(
-        form.targetAmount
-      ),
-      savedAmount: Number(
-        form.savedAmount || 0
-      ),
-    });
+    try {
+      const payload = {
+        name: form.name,
+        targetAmount: Number(form.targetAmount),
+        savedAmount: Number(form.savedAmount || 0),
+      };
 
-    setForm({
-      name: "",
-      targetAmount: "",
-      savedAmount: "",
-      targetDate: "",
-    });
+      if (form.targetDate) {
+        payload.targetDate = form.targetDate;
+      }
 
-    load();
+      await createGoal(payload);
+
+      setForm({
+        name: "",
+        targetAmount: "",
+        savedAmount: "",
+        targetDate: "",
+      });
+
+      load();
+    } catch (err) {
+      console.error("Failed to create goal:", err);
+    }
   };
 
   return (

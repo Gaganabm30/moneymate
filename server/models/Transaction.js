@@ -36,6 +36,9 @@ const transactionSchema = new mongoose.Schema(
 
     paymentMethod: {
       type: String,
+      lowercase: true,
+      trim: true,
+      default: "upi",
       enum: [
         "cash",
         "upi",
@@ -44,7 +47,14 @@ const transactionSchema = new mongoose.Schema(
         "bank-transfer",
         "other",
       ],
-      default: "upi",
+      set: (v) => {
+        if (!v) return "upi";
+        const s = String(v).toLowerCase().trim().replace(/\s+/g, "-");
+        if (s === "card") return "credit-card";
+        if (s === "bank") return "bank-transfer";
+        if (["cash", "upi", "credit-card", "debit-card", "bank-transfer", "other"].includes(s)) return s;
+        return "other";
+      },
     },
 
     date: {

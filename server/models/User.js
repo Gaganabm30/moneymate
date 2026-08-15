@@ -24,6 +24,26 @@ const userSchema = new mongoose.Schema(
       minlength: 6,
       select: false,
     },
+
+    phone: {
+      type: String,
+      default: "",
+    },
+
+    country: {
+      type: String,
+      default: "India",
+    },
+
+    currency: {
+      type: String,
+      default: "INR",
+    },
+
+    monthlyIncome: {
+      type: Number,
+      default: 0,
+    },
   },
   {
     timestamps: true,

@@ -24,7 +24,13 @@ function Budgets() {
   });
 
   const load = async () => {
-    setBudgets(await getBudgets());
+    try {
+      const data = await getBudgets();
+      setBudgets(Array.isArray(data) ? data : []);
+    } catch (err) {
+      console.error("Failed to load budgets:", err);
+      setBudgets([]);
+    }
   };
 
   useEffect(() => {
@@ -34,17 +40,21 @@ function Budgets() {
   const submit = async (event) => {
     event.preventDefault();
 
-    await createBudget({
-      ...form,
-      limit: Number(form.limit),
-    });
+    try {
+      await createBudget({
+        ...form,
+        limit: Number(form.limit),
+      });
 
-    setForm({
-      ...form,
-      limit: "",
-    });
+      setForm({
+        ...form,
+        limit: "",
+      });
 
-    load();
+      load();
+    } catch (err) {
+      console.error("Failed to create budget:", err);
+    }
   };
 
   return (

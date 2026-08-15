@@ -1,181 +1,351 @@
-import {
-  useEffect,
-  useState,
-} from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
+import "../styles/dashboard.css";
 
-import {
-  PieChart,
-  Pie,
-  Tooltip,
-  ResponsiveContainer,
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-} from "recharts";
-
-import Layout from "../components/common/Layout";
+import Sidebar from "../components/dashboard/Sidebar";
+import Topbar from "../components/dashboard/Topbar";
 import StatCard from "../components/dashboard/StatCard";
+import ExpenseChart from "../components/dashboard/ExpenseChart";
+import AIInsightCard from "../components/dashboard/AIInsightCard";
+import RecentTransactions from "../components/dashboard/RecentTransactions";
+import AddTransactionModal from "../components/dashboard/AddTransactionModal";
 
-import { getAnalytics } from "../services/analyticsService";
+import { useAuth } from "../context/AuthContext";
+import {
+  getTransactions,
+  createTransaction,
+  updateTransaction,
+  deleteTransaction,
+} from "../services/transactionService";
+import { getGoals } from "../services/goalService";
 
-const currency = (value) =>
-  new Intl.NumberFormat("en-IN", {
-    style: "currency",
-    currency: "INR",
-    maximumFractionDigits: 0,
-  }).format(value || 0);
+import {
+  FiDollarSign,
+  FiTrendingUp,
+  FiTrendingDown,
+  FiTarget,
+  FiPlus,
+  FiMinusCircle,
+  FiPieChart,
+} from "react-icons/fi";
 
-function Dashboard() {
-  const [data, setData] = useState(null);
+export default function Dashboard() {
+  const navigate = useNavigate();
+  const { user } = useAuth();
 
-  useEffect(() => {
-    getAnalytics()
-      .then(setData)
-      .catch(console.error);
+  const [transactions, setTransactions] = useState([]);
+  const [goals, setGoals] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+
+  // Modal State
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalType, setModalType] = useState("expense");
+  const [editingTransaction, setEditingTransaction] = useState(null);
+
+  // Load user data
+  const loadUserData = useCallback(async () => {
+    try {
+      setLoading(true);
+      const [txRes, goalsRes] = await Promise.allSettled([
+        getTransactions(),
+        getGoals(),
+      ]);
+
+      if (txRes.status === "fulfilled" && txRes.value) {
+        // Backend returns { success: true, count: N, transactions: [...] } or array
+        const txList =
+          txRes.value.transactions ||
+          (Array.isArray(txRes.value) ? txRes.value : []);
+        setTransactions(txList);
+      }
+
+      if (goalsRes.status === "fulfilled" && goalsRes.value) {
+        const goalsList = Array.isArray(goalsRes.value)
+          ? goalsRes.value
+          : goalsRes.value.goals || [];
+        setGoals(goalsList);
+      }
+    } catch (err) {
+      console.error("Failed to load dashboard data:", err);
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
-  if (!data) {
-    return (
-      <Layout>
-        <div>Loading dashboard...</div>
-      </Layout>
-    );
-  }
+  useEffect(() => {
+    loadUserData();
+  }, [loadUserData]);
+
+  // Compute Financial Overview
+  const financialData = useMemo(() => {
+    let income = 0;
+    let expenses = 0;
+
+    (transactions || []).forEach((t) => {
+      const amt = Math.abs(Number(t.amount) || 0);
+      const isIncome = t.type ? t.type === "income" : Number(t.amount) > 0;
+      if (isIncome) {
+        income += amt;
+      } else {
+        expenses += amt;
+      }
+    });
+
+    const balance = income - expenses;
+
+    // Total target savings goal amount from active goals
+    const totalGoalAmount = (goals || []).reduce((sum, g) => {
+      return sum + (Number(g.targetAmount) || Number(g.target) || 0);
+    }, 0);
+
+    return {
+      balance,
+      income,
+      expenses,
+      savings: balance,
+      savingsGoal: totalGoalAmount,
+      transactionsCount: transactions.length,
+      goalsCount: goals.length,
+    };
+  }, [transactions, goals]);
+
+  // Handle adding new transaction
+  const handleAddTransaction = async (newTxData) => {
+    try {
+      const res = await createTransaction(newTxData);
+      if (res?.transaction) {
+        setTransactions((prev) => [res.transaction, ...prev]);
+      } else {
+        await loadUserData();
+      }
+    } catch (err) {
+      console.error("Create transaction failed:", err);
+      await loadUserData();
+    }
+  };
+
+  // Handle editing existing transaction
+  const handleUpdateTransaction = async (id, updatedTxData) => {
+    try {
+      const res = await updateTransaction(id, updatedTxData);
+      if (res?.transaction) {
+        setTransactions((prev) =>
+          prev.map((t) => (t._id === id ? res.transaction : t))
+        );
+      } else {
+        await loadUserData();
+      }
+    } catch (err) {
+      console.error("Update transaction failed:", err);
+      await loadUserData();
+    }
+  };
+
+  // Handle deleting transaction
+  const handleDeleteTransaction = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this transaction?")) {
+      return;
+    }
+    try {
+      await deleteTransaction(id);
+      setTransactions((prev) => prev.filter((t) => t._id !== id));
+    } catch (err) {
+      console.error("Delete transaction failed:", err);
+      await loadUserData();
+    }
+  };
+
+  const openAddModal = (type = "expense") => {
+    setEditingTransaction(null);
+    setModalType(type);
+    setIsModalOpen(true);
+  };
+
+  const openEditModal = (transaction) => {
+    setEditingTransaction(transaction);
+    setModalType(transaction.type || "expense");
+    setIsModalOpen(true);
+  };
+
+  const isNewUser = financialData.transactionsCount === 0;
 
   return (
-    <Layout>
-      <div className="page-heading">
-        <div>
-          <p className="eyebrow">
-            FINANCIAL OVERVIEW
-          </p>
+    <div className="dashboard-page">
+      {/* ================= SIDEBAR ================= */}
+      <Sidebar
+        isOpen={isMobileSidebarOpen}
+        onClose={() => setIsMobileSidebarOpen(false)}
+      />
 
-          <h1>Your money at a glance</h1>
-        </div>
-      </div>
-
-      <div className="stats-grid">
-        <StatCard
-          title="Total Income"
-          value={currency(data.summary.income)}
+      {/* ================= MAIN ================= */}
+      <main className="dashboard-main">
+        <Topbar
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
+          onToggleMobileSidebar={() =>
+            setIsMobileSidebarOpen(!isMobileSidebarOpen)
+          }
+          user={user}
         />
 
-        <StatCard
-          title="Total Expenses"
-          value={currency(data.summary.expenses)}
-        />
+        <section className="dashboard-content">
+          {/* ================= HEADER ================= */}
+          <div className="dashboard-heading">
+            <div>
+              <p className="dashboard-greeting">
+                Good{" "}
+                {new Date().getHours() < 12
+                  ? "morning"
+                  : new Date().getHours() < 18
+                  ? "afternoon"
+                  : "evening"}{" "}
+                {user?.name ? `${user.name.split(" ")[0]} ` : ""}👋
+              </p>
 
-        <StatCard
-          title="Balance"
-          value={currency(data.summary.balance)}
-        />
+              <h1>
+                {isNewUser
+                  ? "Welcome to your financial dashboard"
+                  : "Here's your financial overview"}
+              </h1>
 
-        <StatCard
-          title="Savings Rate"
-          value={`${data.summary.savingsRate}%`}
-        />
-      </div>
+              <p className="dashboard-subtitle">
+                {isNewUser
+                  ? "Start tracking your money, analyze your spending, and make smarter financial decisions."
+                  : "Track your income, monitor expenses, and stay on top of your financial goals."}
+              </p>
+            </div>
 
-      <div className="dashboard-grid">
-        <div className="card chart-card">
-          <h3>Spending trend</h3>
-
-          <ResponsiveContainer
-            width="100%"
-            height={280}
-          >
-            <LineChart data={data.monthlyData}>
-              <CartesianGrid
-                strokeDasharray="3 3"
-                vertical={false}
-              />
-
-              <XAxis dataKey="month" />
-
-              <YAxis />
-
-              <Tooltip />
-
-              <Line
-                type="monotone"
-                dataKey="total"
-                stroke="currentColor"
-                strokeWidth={3}
-              />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
-
-        <div className="card chart-card">
-          <h3>Expense categories</h3>
-
-          <ResponsiveContainer
-            width="100%"
-            height={280}
-          >
-            <PieChart>
-              <Pie
-                data={data.categoryData}
-                dataKey="value"
-                nameKey="name"
-                innerRadius={65}
-                outerRadius={100}
-              />
-
-              <Tooltip />
-            </PieChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
-
-      <div className="intelligence-grid">
-        <div className="card health-card">
-          <p className="eyebrow">
-            FINANCIAL HEALTH
-          </p>
-
-          <div className="score">
-            {data.health.score}
-            <span>/100</span>
+            <button
+              type="button"
+              className="add-money-btn"
+              onClick={() => openAddModal("expense")}
+            >
+              <FiPlus /> Add Transaction
+            </button>
           </div>
 
-          <h3>{data.health.label}</h3>
-        </div>
+          {/* ================= QUICK ACTIONS ================= */}
+          <div className="quick-actions">
+            <span className="quick-label">Quick Actions:</span>
 
-        <div className="card">
-          <p className="eyebrow">
-            NEXT MONTH FORECAST
-          </p>
+            <button
+              type="button"
+              className="quick-action-btn"
+              onClick={() => openAddModal("expense")}
+            >
+              <FiMinusCircle className="action-icon expense-color" /> Add Expense
+            </button>
 
-          <h2>
-            {currency(
-              data.predictedNextMonth
-            )}
-          </h2>
+            <button
+              type="button"
+              className="quick-action-btn"
+              onClick={() => openAddModal("income")}
+            >
+              <FiPlus className="action-icon income-color" /> Add Income
+            </button>
 
-          <p className="muted">
-            Estimated using your recent
-            spending history.
-          </p>
-        </div>
+            <button
+              type="button"
+              className="quick-action-btn"
+              onClick={() => navigate("/budgets")}
+            >
+              <FiPieChart className="action-icon budget-color" /> Create Budget
+            </button>
 
-        <div className="card">
-          <p className="eyebrow">
-            MONEY LEAKS
-          </p>
+            <button
+              type="button"
+              className="quick-action-btn"
+              onClick={() => navigate("/goals")}
+            >
+              <FiTarget className="action-icon goal-color" /> Set Goal
+            </button>
+          </div>
 
-          <h2>{data.moneyLeaks.length}</h2>
+          {/* ================= STAT CARDS ================= */}
+          <div className="stats-grid">
+            <StatCard
+              title="Total Balance"
+              value={`₹${financialData.balance.toLocaleString("en-IN")}`}
+              change={financialData.balance >= 0 ? "+0.0%" : "-0.0%"}
+              subtitle={isNewUser ? "No transactions yet" : "Net balance"}
+              icon={<FiDollarSign />}
+              type="balance"
+            />
 
-          <p className="muted">
-            Repeated spending patterns
-            worth reviewing.
-          </p>
-        </div>
-      </div>
-    </Layout>
+            <StatCard
+              title="Total Income"
+              value={`₹${financialData.income.toLocaleString("en-IN")}`}
+              change="+0.0%"
+              subtitle={isNewUser ? "Add your first income" : "Total earned"}
+              icon={<FiTrendingUp />}
+              type="income"
+            />
+
+            <StatCard
+              title="Total Expenses"
+              value={`₹${financialData.expenses.toLocaleString("en-IN")}`}
+              change="0.0%"
+              subtitle={isNewUser ? "No expenses recorded" : "Total spent"}
+              icon={<FiTrendingDown />}
+              type="expense"
+            />
+
+            <StatCard
+              title="Savings Goal"
+              value={`₹${financialData.savingsGoal.toLocaleString("en-IN")}`}
+              change="0.0%"
+              subtitle={
+                financialData.goalsCount === 0
+                  ? "Create your first goal"
+                  : `${financialData.goalsCount} active goal${
+                      financialData.goalsCount === 1 ? "" : "s"
+                    }`
+              }
+              icon={<FiTarget />}
+              type="goal"
+            />
+          </div>
+
+          {/* ================= MIDDLE ================= */}
+          <div className="dashboard-middle">
+            <ExpenseChart
+              transactions={transactions}
+              onAddTransactionClick={() => openAddModal("expense")}
+            />
+
+            <AIInsightCard
+              transactions={transactions}
+              balance={financialData.balance}
+              income={financialData.income}
+              expenses={financialData.expenses}
+            />
+          </div>
+
+          {/* ================= RECENT TRANSACTIONS ================= */}
+          <RecentTransactions
+            searchQuery={searchQuery}
+            transactions={transactions}
+            onAddTransactionClick={() => openAddModal("expense")}
+            onEditTransaction={openEditModal}
+            onDeleteTransaction={handleDeleteTransaction}
+          />
+        </section>
+      </main>
+
+      {/* ================= ADD/EDIT TRANSACTION MODAL ================= */}
+      <AddTransactionModal
+        isOpen={isModalOpen}
+        initialType={modalType}
+        editingTransaction={editingTransaction}
+        onClose={() => {
+          setIsModalOpen(false);
+          setEditingTransaction(null);
+        }}
+        onAddTransaction={handleAddTransaction}
+        onUpdateTransaction={handleUpdateTransaction}
+      />
+    </div>
   );
 }
-
-export default Dashboard;

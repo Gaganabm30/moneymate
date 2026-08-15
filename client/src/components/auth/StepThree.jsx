@@ -1,75 +1,237 @@
-export default function StepThree({prev}){
+import {
+  FiGlobe,
+  FiDollarSign,
+  FiTrendingUp,
+  FiArrowLeft,
+  FiStar
+} from "react-icons/fi";
 
-return(
+export default function StepThree({
+  formData = {},
+  updateFormData,
+  prev,
+  onSubmit,
+  loading = false,
+}) {
+  const handleSubmit = (e) => {
+    e.preventDefault();
 
-<>
+    if (onSubmit) {
+      onSubmit(e);
+    }
+  };
 
-<div className="input-group">
+  return (
+    <form onSubmit={handleSubmit} className="step-form">
 
-<select>
+      {/* Country / Region */}
+      <div className="form-field">
+        <label
+          className="form-label"
+          htmlFor="reg-country"
+        >
+          Country / Region
+        </label>
 
-<option>India</option>
+        <div className="input-wrapper">
+          <FiGlobe className="field-icon" />
 
-<option>United States</option>
+          <select
+            id="reg-country"
+            value={formData.country || "India"}
+            onChange={(e) =>
+              updateFormData("country", e.target.value)
+            }
+            className="form-input form-select"
+          >
+            <option value="India">
+              India 🇮🇳
+            </option>
 
-<option>United Kingdom</option>
+            <option value="United States">
+              United States 🇺🇸
+            </option>
 
-</select>
+            <option value="United Kingdom">
+              United Kingdom 🇬🇧
+            </option>
 
-</div>
+            <option value="Canada">
+              Canada 🇨🇦
+            </option>
 
-<div className="input-group">
+            <option value="Australia">
+              Australia 🇦🇺
+            </option>
 
-<select>
+            <option value="Germany">
+              Germany 🇩🇪
+            </option>
 
-<option>INR ₹</option>
+            <option value="Singapore">
+              Singapore 🇸🇬
+            </option>
+          </select>
+        </div>
+      </div>
 
-<option>USD $</option>
 
-<option>EUR €</option>
+      {/* Preferred Currency */}
+      <div className="form-field">
+        <label
+          className="form-label"
+          htmlFor="reg-currency"
+        >
+          Preferred Currency
+        </label>
 
-</select>
+        <div className="input-wrapper">
+          <FiDollarSign className="field-icon" />
 
-</div>
+          <select
+            id="reg-currency"
+            value={formData.currency || "INR"}
+            onChange={(e) =>
+              updateFormData("currency", e.target.value)
+            }
+            className="form-input form-select"
+          >
+            <option value="INR">
+              INR (₹) - Indian Rupee
+            </option>
 
-<div className="input-group">
+            <option value="USD">
+              USD ($) - US Dollar
+            </option>
 
-<input
-placeholder="Monthly Income (Optional)"
-/>
+            <option value="EUR">
+              EUR (€) - Euro
+            </option>
 
-</div>
+            <option value="GBP">
+              GBP (£) - British Pound
+            </option>
 
-<label className="terms">
+            <option value="CAD">
+              CAD ($) - Canadian Dollar
+            </option>
 
-<input type="checkbox"/>
+            <option value="AUD">
+              AUD ($) - Australian Dollar
+            </option>
+          </select>
+        </div>
+      </div>
 
-I agree to the Terms & Privacy Policy
 
-</label>
+      {/* Monthly Income */}
+      <div className="form-field">
+        <label
+          className="form-label"
+          htmlFor="reg-income"
+        >
+          Monthly Income
+          <span className="optional-text">
+            {" "} (Optional)
+          </span>
+        </label>
 
-<div className="wizard-buttons">
+        <div className="input-wrapper">
+          <FiTrendingUp className="field-icon" />
 
-<button
-className="secondary-btn"
-onClick={prev}
->
+          <input
+            id="reg-income"
+            type="number"
+            min="0"
+            placeholder="e.g. 50000"
+            value={formData.monthlyIncome || ""}
+            onChange={(e) =>
+              updateFormData(
+                "monthlyIncome",
+                e.target.value
+              )
+            }
+            className="form-input"
+          />
+        </div>
+      </div>
 
-Back
 
-</button>
+      {/* Terms */}
+      <label className="terms-checkbox">
 
-<button
-className="login-btn">
+        <input
+          type="checkbox"
+          checked={formData.agreeTerms || false}
+          onChange={(e) =>
+            updateFormData(
+              "agreeTerms",
+              e.target.checked
+            )
+          }
+          required
+        />
 
-Create Account
+        <span>
+          I agree to the{" "}
 
-</button>
+          <a
+            href="#terms"
+            onClick={(e) => e.preventDefault()}
+          >
+            Terms of Service
+          </a>
 
-</div>
+          {" "}and{" "}
 
-</>
+          <a
+            href="#privacy"
+            onClick={(e) => e.preventDefault()}
+          >
+            Privacy Policy
+          </a>
+        </span>
 
-);
+      </label>
 
+
+      {/* Navigation Buttons */}
+      <div className="wizard-buttons">
+
+        <button
+          type="button"
+          className="wizard-btn secondary-btn"
+          onClick={prev}
+          disabled={loading}
+        >
+          <FiArrowLeft className="btn-icon" />
+
+          <span>
+            Back
+          </span>
+        </button>
+
+
+        <button
+          type="submit"
+          className="wizard-btn primary-btn submit-final-btn"
+          disabled={loading}
+        >
+          {loading ? (
+            <div className="spinner-sm" />
+          ) : (
+            <>
+              <FiStar className="btn-icon" />
+
+              <span>
+                Create Account
+              </span>
+            </>
+          )}
+        </button>
+
+      </div>
+
+    </form>
+  );
 }

@@ -3,12 +3,12 @@ const express = require("express");
 const protect = require("../middleware/authMiddleware");
 
 const {
-  createTransaction,
-  getTransactions,
-  getTransaction,
-  updateTransaction,
-  deleteTransaction,
-} = require("../controllers/transactionController");
+  createGoal,
+  getGoals,
+  updateGoal,
+  deleteGoal,
+  simulateGoal,
+} = require("../controllers/goalController");
 
 const router = express.Router();
 
@@ -16,13 +16,14 @@ router.use(protect);
 
 router
   .route("/")
-  .get(getTransactions)
-  .post(createTransaction);
+  .get(getGoals)
+  .post(createGoal);
 
 router
   .route("/:id")
-  .get(getTransaction)
-  .put(updateTransaction)
-  .delete(deleteTransaction);
+  .put(updateGoal)
+  .delete(deleteGoal);
+
+router.post("/:id/simulate", simulateGoal);
 
 module.exports = router;

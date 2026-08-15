@@ -7,6 +7,7 @@ import Layout from "../components/common/Layout";
 
 import {
   createTransaction,
+  updateTransaction,
   deleteTransaction,
   getTransactions,
 } from "../services/transactionService";
@@ -39,11 +40,17 @@ function Transactions() {
     useState([]);
 
   const [form, setForm] = useState(initialForm);
+  const [editingId, setEditingId] = useState(null);
 
   const loadTransactions = async () => {
-    const data = await getTransactions();
-
-    setTransactions(data);
+    try {
+      const data = await getTransactions();
+      const list = Array.isArray(data) ? data : (data?.transactions || []);
+      setTransactions(list);
+    } catch (err) {
+      console.error("Failed to load transactions:", err);
+      setTransactions([]);
+    }
   };
 
   useEffect(() => {
@@ -57,16 +64,40 @@ function Transactions() {
     });
   };
 
+  const startEdit = (transaction) => {
+    setEditingId(transaction._id);
+    setForm({
+      type: transaction.type || "expense",
+      amount: transaction.amount || "",
+      category: transaction.category || "Food",
+      description: transaction.description || "",
+      paymentMethod: (transaction.paymentMethod || "upi").toLowerCase(),
+      date: transaction.date ? new Date(transaction.date).toISOString().split("T")[0] : new Date().toISOString().split("T")[0],
+    });
+  };
+
+  const cancelEdit = () => {
+    setEditingId(null);
+    setForm(initialForm);
+  };
+
   const submit = async (event) => {
     event.preventDefault();
 
-    await createTransaction({
+    const payload = {
       ...form,
       amount: Number(form.amount),
-    });
+      paymentMethod: form.paymentMethod.toLowerCase(),
+    };
+
+    if (editingId) {
+      await updateTransaction(editingId, payload);
+      setEditingId(null);
+    } else {
+      await createTransaction(payload);
+    }
 
     setForm(initialForm);
-
     await loadTransactions();
   };
 
@@ -101,7 +132,7 @@ function Transactions() {
           className="card transaction-form"
           onSubmit={submit}
         >
-          <h3>Add transaction</h3>
+          <h3>{editingId ? "Edit transaction" : "Add transaction"}</h3>
 
           <label>Type</label>
 
@@ -119,13 +150,14 @@ function Transactions() {
             </option>
           </select>
 
-          <label>Amount</label>
+          <label>Amount (₹)</label>
 
           <input
             type="number"
             name="amount"
-            min="0"
+            min="0.01"
             step="0.01"
+            placeholder="0.00"
             value={form.amount}
             onChange={handleChange}
             required
@@ -161,7 +193,7 @@ function Transactions() {
             value={form.paymentMethod}
             onChange={handleChange}
           >
-            <option value="upi">UPI</option>
+            <option value="upi">UPI / GPay / PhonePe</option>
             <option value="cash">Cash</option>
             <option value="credit-card">
               Credit Card
@@ -169,7 +201,7 @@ function Transactions() {
             <option value="debit-card">
               Debit Card
             </option>
-            <option value="bank">
+            <option value="bank-transfer">
               Bank Transfer
             </option>
           </select>
@@ -183,9 +215,21 @@ function Transactions() {
             onChange={handleChange}
           />
 
-          <button className="primary-button">
-            Add transaction
-          </button>
+          <div style={{ display: "flex", gap: "10px", marginTop: "16px" }}>
+            <button type="submit" className="primary-button" style={{ flex: 1 }}>
+              {editingId ? "Update transaction" : "Add transaction"}
+            </button>
+            {editingId && (
+              <button
+                type="button"
+                className="delete-button"
+                style={{ background: "#f1f5f9", color: "#475569" }}
+                onClick={cancelEdit}
+              >
+                Cancel
+              </button>
+            )}
+          </div>
         </form>
 
         <div className="card">
@@ -205,31 +249,45 @@ function Transactions() {
                     </strong>
 
                     <p className="muted">
-                      {transaction.category} •{" "}
-                      {new Date(
-                        transaction.date
-                      ).toLocaleDateString()}
+                      {transaction.category || "General"} •{" "}
+                      {transaction.date
+                        ? new Date(transaction.date).toLocaleDateString("en-IN")
+                        : "Recent"}
                     </p>
                   </div>
 
-                  <div className="transaction-actions">
+                  <div className="transaction-actions" style={{ display: "flex", alignItems: "center", gap: "12px" }}>
                     <strong
                       className={
-                        transaction.type ===
-                        "income"
+                        transaction.type === "income"
                           ? "income"
                           : "expense"
                       }
                     >
-                      {transaction.type ===
-                      "income"
-                        ? "+"
-                        : "-"}
+                      {transaction.type === "income" ? "+" : "-"}
                       ₹
-                      {transaction.amount.toLocaleString(
+                      {Number(transaction.amount || 0).toLocaleString(
                         "en-IN"
                       )}
                     </strong>
+
+                    <button
+                      type="button"
+                      className="edit-button"
+                      style={{
+                        padding: "6px 12px",
+                        borderRadius: "8px",
+                        border: "1px solid #e2e8f0",
+                        background: "#f8fafc",
+                        fontSize: "0.825rem",
+                        fontWeight: 600,
+                        color: "#3b82f6",
+                        cursor: "pointer",
+                      }}
+                      onClick={() => startEdit(transaction)}
+                    >
+                      Edit
+                    </button>
 
                     <button
                       className="delete-button"

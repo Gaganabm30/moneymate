@@ -16,6 +16,18 @@ const transactionRoutes = require(
   "./routes/transactionRoutes"
 );
 
+const budgetRoutes = require(
+  "./routes/budgetRoutes"
+);
+
+const goalRoutes = require(
+  "./routes/goalRoutes"
+);
+
+const analyticsRoutes = require(
+  "./routes/analyticsRoutes"
+);
+
 const {
   notFound,
   errorHandler,
@@ -94,6 +106,21 @@ app.use(
 app.use(
   "/api/transactions",
   transactionRoutes
+);
+
+app.use(
+  "/api/budgets",
+  budgetRoutes
+);
+
+app.use(
+  "/api/goals",
+  goalRoutes
+);
+
+app.use(
+  "/api/analytics",
+  analyticsRoutes
 );
 
 // ============================================

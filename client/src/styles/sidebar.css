@@ -1,3 +1,8 @@
+/* =========================================================
+   MONEY MATE AI — SHARED SIDEBAR CSS
+   Used by common/Sidebar.jsx (all inner pages via Layout)
+========================================================= */
+
 /* ── Sidebar Shell ── */
 .sidebar {
   position: fixed;
@@ -14,16 +19,23 @@
   overflow: hidden;
 }
 
-/* ── Brand ── */
+/* ── Brand / Logo ── */
 .sidebar-brand {
   display: flex;
   align-items: center;
   gap: var(--space-3);
-  padding: var(--space-5) var(--space-5);
+  padding: var(--space-5);
   border-bottom: 1px solid var(--border);
   text-decoration: none;
   flex-shrink: 0;
+  transition: background var(--transition-fast);
 }
+
+.sidebar-brand:hover {
+  background: var(--surface-2);
+}
+
+/* The coloured "M" icon badge */
 .sidebar-logo {
   width: 40px;
   height: 40px;
@@ -38,37 +50,54 @@
   font-weight: 800;
   flex-shrink: 0;
   box-shadow: 0 4px 12px rgba(99, 91, 255, 0.3);
+  letter-spacing: -0.5px;
 }
+
+/* Text beside the badge */
+.sidebar-brand-text {
+  flex: 1;
+  min-width: 0;
+}
+
 .sidebar-brand-text h2 {
   font-size: var(--text-md);
   font-weight: 700;
   color: var(--text);
   line-height: 1.2;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
+
 .sidebar-brand-text span {
   font-size: var(--text-xs);
   color: var(--text-muted);
   font-weight: 400;
+  display: block;
+  margin-top: 2px;
 }
 
-/* ── Nav ── */
+/* ── Nav Container ── */
 .sidebar-nav {
   flex: 1;
   padding: var(--space-4) var(--space-3);
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: var(--space-1);
+  gap: 2px;
 }
 
+/* Section labels */
 .sidebar-section-label {
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--text-subtle);
-  padding: var(--space-3) var(--space-3) var(--space-2);
+  padding: var(--space-3) var(--space-3) var(--space-1);
   margin-top: var(--space-2);
+  display: block;
 }
 
 /* ── Nav Item ── */
@@ -86,15 +115,18 @@
   position: relative;
   cursor: pointer;
 }
+
 .sidebar-link:hover {
   background: var(--primary-alpha);
   color: var(--primary);
 }
+
 .sidebar-link.active {
   background: var(--primary-alpha);
   color: var(--primary);
   font-weight: 600;
 }
+
 .sidebar-link.active::before {
   content: '';
   position: absolute;
@@ -106,6 +138,7 @@
   background: var(--primary);
   border-radius: 0 4px 4px 0;
 }
+
 .sidebar-link-icon {
   width: 20px;
   height: 20px;
@@ -115,10 +148,12 @@
   font-size: 18px;
   flex-shrink: 0;
 }
+
 .sidebar-link-label {
   flex: 1;
   white-space: nowrap;
 }
+
 .sidebar-link-badge {
   background: var(--danger);
   color: white;
@@ -130,26 +165,26 @@
   text-align: center;
 }
 
-/* ── Sidebar bottom / user area ── */
+/* ── Sidebar Footer (User + Logout) ── */
 .sidebar-footer {
-  padding: var(--space-4) var(--space-3);
+  padding: var(--space-3);
   border-top: 1px solid var(--border);
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
+  flex-shrink: 0;
+  background: var(--surface-2);
 }
+
 .sidebar-user {
   display: flex;
   align-items: center;
   gap: var(--space-3);
-  padding: var(--space-3);
+  padding: var(--space-2) var(--space-2);
   border-radius: var(--radius);
-  cursor: pointer;
-  transition: background var(--transition-fast);
+  cursor: default;
 }
-.sidebar-user:hover {
-  background: var(--surface-2);
-}
+
 .sidebar-avatar {
   width: 36px;
   height: 36px;
@@ -159,14 +194,17 @@
   align-items: center;
   justify-content: center;
   color: white;
-  font-size: var(--text-sm);
+  font-size: var(--text-xs);
   font-weight: 700;
   flex-shrink: 0;
+  letter-spacing: 0.5px;
 }
+
 .sidebar-user-info {
   flex: 1;
   min-width: 0;
 }
+
 .sidebar-user-info strong {
   display: block;
   font-size: var(--text-sm);
@@ -176,19 +214,21 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
 .sidebar-user-info span {
   font-size: var(--text-xs);
   color: var(--text-muted);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  display: block;
 }
 
 .sidebar-logout-btn {
   display: flex;
   align-items: center;
   gap: var(--space-3);
-  padding: 10px var(--space-3);
+  padding: 9px var(--space-3);
   border-radius: var(--radius);
   font-size: var(--text-sm);
   font-weight: 500;
@@ -199,6 +239,7 @@
   width: 100%;
   transition: background var(--transition-fast);
 }
+
 .sidebar-logout-btn:hover {
   background: var(--danger-light);
 }
