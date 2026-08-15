@@ -1,198 +1,437 @@
-import {
-  useEffect,
-  useState,
-} from "react";
+import "../styles/goals.css";
 
-import Layout from "../components/common/Layout";
+import Sidebar from "../components/dashboard/Sidebar";
+import Topbar from "../components/dashboard/Topbar";
 
 import {
-  createGoal,
-  deleteGoal,
-  getGoals,
-} from "../services/goalService";
+  FiPlus,
+  FiTarget,
+  FiHome,
+  FiBriefcase,
+  FiBookOpen,
+  FiHeart,
+  FiEdit2,
+  FiTrash2,
+  FiMoreHorizontal,
+  FiCheckCircle,
+  FiCalendar,
+  FiTrendingUp
+} from "react-icons/fi";
 
-function Goals() {
-  const [goals, setGoals] = useState([]);
+import { useState } from "react";
 
-  const [form, setForm] = useState({
-    name: "",
-    targetAmount: "",
-    savedAmount: "",
-    targetDate: "",
-  });
+export default function Goals() {
+  const [filter, setFilter] = useState("all");
 
-  const load = async () => {
-    try {
-      const data = await getGoals();
-      setGoals(Array.isArray(data) ? data : []);
-    } catch (err) {
-      console.error("Failed to load goals:", err);
-      setGoals([]);
+  const goals = [
+    {
+      id: 1,
+      title: "Emergency Fund",
+      category: "Savings",
+      icon: <FiTarget />,
+      target: 100000,
+      saved: 72000,
+      deadline: "Dec 31, 2026",
+      color: "purple"
+    },
+    {
+      id: 2,
+      title: "New Laptop",
+      category: "Technology",
+      icon: <FiBriefcase />,
+      target: 85000,
+      saved: 51000,
+      deadline: "Oct 15, 2026",
+      color: "blue"
+    },
+    {
+      id: 3,
+      title: "Vacation",
+      category: "Travel",
+      icon: <FiHome />,
+      target: 60000,
+      saved: 24000,
+      deadline: "Dec 10, 2026",
+      color: "orange"
+    },
+    {
+      id: 4,
+      title: "Higher Education",
+      category: "Education",
+      icon: <FiBookOpen />,
+      target: 200000,
+      saved: 90000,
+      deadline: "Jun 30, 2027",
+      color: "green"
+    },
+    {
+      id: 5,
+      title: "Health Fund",
+      category: "Health",
+      icon: <FiHeart />,
+      target: 50000,
+      saved: 35000,
+      deadline: "Nov 30, 2026",
+      color: "pink"
     }
-  };
+  ];
 
-  useEffect(() => {
-    load();
-  }, []);
+  const filteredGoals =
+    filter === "all"
+      ? goals
+      : goals.filter(
+          (goal) => goal.category.toLowerCase() === filter
+        );
 
-  const submit = async (event) => {
-    event.preventDefault();
+  const totalTarget = goals.reduce(
+    (sum, goal) => sum + goal.target,
+    0
+  );
 
-    try {
-      const payload = {
-        name: form.name,
-        targetAmount: Number(form.targetAmount),
-        savedAmount: Number(form.savedAmount || 0),
-      };
+  const totalSaved = goals.reduce(
+    (sum, goal) => sum + goal.saved,
+    0
+  );
 
-      if (form.targetDate) {
-        payload.targetDate = form.targetDate;
-      }
+  const totalRemaining = totalTarget - totalSaved;
 
-      await createGoal(payload);
-
-      setForm({
-        name: "",
-        targetAmount: "",
-        savedAmount: "",
-        targetDate: "",
-      });
-
-      load();
-    } catch (err) {
-      console.error("Failed to create goal:", err);
-    }
-  };
+  const overallProgress =
+    totalTarget > 0
+      ? Math.round((totalSaved / totalTarget) * 100)
+      : 0;
 
   return (
-    <Layout>
-      <div className="page-heading">
-        <div>
-          <p className="eyebrow">
-            SAVINGS GOALS
-          </p>
+    <div className="goals-page">
 
-          <h1>Turn plans into progress</h1>
-        </div>
-      </div>
+      <Sidebar />
 
-      <form
-        className="card goal-form"
-        onSubmit={submit}
-      >
-        <input
-          placeholder="Goal name"
-          value={form.name}
-          onChange={(e) =>
-            setForm({
-              ...form,
-              name: e.target.value,
-            })
-          }
-          required
-        />
+      <main className="goals-main">
 
-        <input
-          type="number"
-          placeholder="Target amount"
-          value={form.targetAmount}
-          onChange={(e) =>
-            setForm({
-              ...form,
-              targetAmount:
-                e.target.value,
-            })
-          }
-          required
-        />
+        <Topbar />
 
-        <input
-          type="number"
-          placeholder="Already saved"
-          value={form.savedAmount}
-          onChange={(e) =>
-            setForm({
-              ...form,
-              savedAmount:
-                e.target.value,
-            })
-          }
-        />
+        <section className="goals-content">
 
-        <input
-          type="date"
-          value={form.targetDate}
-          onChange={(e) =>
-            setForm({
-              ...form,
-              targetDate:
-                e.target.value,
-            })
-          }
-        />
+          {/* HEADER */}
 
-        <button className="primary-button">
-          Create goal
-        </button>
-      </form>
+          <div className="goals-header">
 
-      <div className="goal-grid">
-        {goals.map((goal) => {
-          const percentage = Math.min(
-            Math.round(
-              (goal.savedAmount /
-                goal.targetAmount) *
-                100
-            ),
-            100
-          );
+            <div>
+              <p className="goals-eyebrow">
+                FINANCIAL PLANNING
+              </p>
 
-          return (
-            <div
-              className="card"
-              key={goal._id}
-            >
-              <div className="row-between">
-                <h2>{goal.name}</h2>
+              <h1>Your Financial Goals</h1>
 
-                <button
-                  className="delete-button"
-                  onClick={async () => {
-                    await deleteGoal(goal._id);
-                    load();
-                  }}
-                >
-                  Delete
-                </button>
-              </div>
-
-              <h3>
-                ₹
-                {goal.savedAmount.toLocaleString(
-                  "en-IN"
-                )}{" "}
-                / ₹
-                {goal.targetAmount.toLocaleString(
-                  "en-IN"
-                )}
-              </h3>
-
-              <div className="progress">
-                <div
-                  className="progress-value"
-                  style={{
-                    width: `${percentage}%`,
-                  }}
-                />
-              </div>
-
-              <p>{percentage}% complete</p>
+              <p>
+                Turn your plans into goals and track your
+                progress step by step.
+              </p>
             </div>
-          );
-        })}
-      </div>
-    </Layout>
+
+            <button className="add-goal-btn">
+              <FiPlus />
+              Create Goal
+            </button>
+
+          </div>
+
+          {/* SUMMARY */}
+
+          <div className="goals-summary-grid">
+
+            <div className="goal-summary-card">
+
+              <div className="goal-summary-icon purple">
+                <FiTarget />
+              </div>
+
+              <div>
+                <span>Total Goals</span>
+                <strong>{goals.length}</strong>
+                <small>Active financial goals</small>
+              </div>
+
+            </div>
+
+            <div className="goal-summary-card">
+
+              <div className="goal-summary-icon blue">
+                <FiTrendingUp />
+              </div>
+
+              <div>
+                <span>Total Saved</span>
+
+                <strong>
+                  ₹{totalSaved.toLocaleString("en-IN")}
+                </strong>
+
+                <small>
+                  {overallProgress}% overall progress
+                </small>
+              </div>
+
+            </div>
+
+            <div className="goal-summary-card">
+
+              <div className="goal-summary-icon orange">
+                <FiTarget />
+              </div>
+
+              <div>
+                <span>Remaining</span>
+
+                <strong>
+                  ₹{totalRemaining.toLocaleString("en-IN")}
+                </strong>
+
+                <small>
+                  Amount needed to reach goals
+                </small>
+              </div>
+
+            </div>
+
+          </div>
+
+          {/* OVERALL PROGRESS */}
+
+          <div className="goals-overview">
+
+            <div className="goals-overview-top">
+
+              <div>
+                <span>Overall Goal Progress</span>
+
+                <h2>
+                  ₹{totalSaved.toLocaleString("en-IN")}
+                  <small>
+                    {" "}
+                    / ₹{totalTarget.toLocaleString("en-IN")}
+                  </small>
+                </h2>
+              </div>
+
+              <strong>
+                {overallProgress}%
+              </strong>
+
+            </div>
+
+            <div className="goals-overview-progress">
+
+              <div
+                style={{
+                  width: `${overallProgress}%`
+                }}
+              />
+
+            </div>
+
+            <p>
+              Keep saving consistently to reach your
+              financial goals.
+            </p>
+
+          </div>
+
+          {/* GOALS TOOLBAR */}
+
+          <div className="goals-toolbar">
+
+            <div>
+              <h2>Your Goals</h2>
+
+              <p>
+                Monitor your progress and stay motivated.
+              </p>
+            </div>
+
+            <div className="goal-filters">
+
+              <button
+                className={filter === "all" ? "active" : ""}
+                onClick={() => setFilter("all")}
+              >
+                All
+              </button>
+
+              <button
+                className={filter === "savings" ? "active" : ""}
+                onClick={() => setFilter("savings")}
+              >
+                Savings
+              </button>
+
+              <button
+                className={filter === "technology" ? "active" : ""}
+                onClick={() => setFilter("technology")}
+              >
+                Technology
+              </button>
+
+              <button
+                className={filter === "travel" ? "active" : ""}
+                onClick={() => setFilter("travel")}
+              >
+                Travel
+              </button>
+
+            </div>
+
+          </div>
+
+          {/* GOALS GRID */}
+
+          <div className="goals-grid">
+
+            {filteredGoals.map((goal) => {
+
+              const percentage =
+                Math.round(
+                  (goal.saved / goal.target) * 100
+                );
+
+              const remaining =
+                goal.target - goal.saved;
+
+              const completed = percentage >= 100;
+
+              return (
+                <div
+                  className="goal-card"
+                  key={goal.id}
+                >
+
+                  <div className="goal-card-top">
+
+                    <div
+                      className={`goal-icon ${goal.color}`}
+                    >
+                      {goal.icon}
+                    </div>
+
+                    <button className="goal-menu">
+                      <FiMoreHorizontal />
+                    </button>
+
+                  </div>
+
+                  <div className="goal-title">
+
+                    <h3>{goal.title}</h3>
+
+                    <span>{goal.category}</span>
+
+                  </div>
+
+                  <div className="goal-money">
+
+                    <div>
+                      <span>Saved</span>
+
+                      <strong>
+                        ₹{goal.saved.toLocaleString("en-IN")}
+                      </strong>
+                    </div>
+
+                    <div>
+                      <span>Target</span>
+
+                      <strong>
+                        ₹{goal.target.toLocaleString("en-IN")}
+                      </strong>
+                    </div>
+
+                  </div>
+
+                  {/* PROGRESS */}
+
+                  <div className="goal-progress-row">
+
+                    <div className="goal-progress-track">
+
+                      <div
+                        className="goal-progress-fill"
+                        style={{
+                          width: `${Math.min(
+                            percentage,
+                            100
+                          )}%`
+                        }}
+                      />
+
+                    </div>
+
+                    <strong>
+                      {percentage}%
+                    </strong>
+
+                  </div>
+
+                  {/* DEADLINE */}
+
+                  <div className="goal-deadline">
+
+                    <div>
+                      <FiCalendar />
+
+                      <span>Deadline</span>
+                    </div>
+
+                    <strong>
+                      {goal.deadline}
+                    </strong>
+
+                  </div>
+
+                  {/* STATUS */}
+
+                  <div
+                    className={`goal-status ${
+                      completed
+                        ? "completed"
+                        : ""
+                    }`}
+                  >
+
+                    <FiCheckCircle />
+
+                    {completed
+                      ? "Goal completed"
+                      : `₹${remaining.toLocaleString(
+                          "en-IN"
+                        )} remaining`}
+
+                  </div>
+
+                  {/* ACTIONS */}
+
+                  <div className="goal-actions">
+
+                    <button>
+                      <FiEdit2 />
+                      Edit
+                    </button>
+
+                    <button className="delete-goal">
+                      <FiTrash2 />
+                      Delete
+                    </button>
+
+                  </div>
+
+                </div>
+              );
+            })}
+
+          </div>
+
+        </section>
+
+      </main>
+
+    </div>
   );
 }
-
-export default Goals;

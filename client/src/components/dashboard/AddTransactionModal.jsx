@@ -18,6 +18,8 @@ export default function AddTransactionModal({
   const [description, setDescription] = useState("");
   const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
   const [paymentMethod, setPaymentMethod] = useState("upi");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
 
   useEffect(() => {
     if (isOpen) {
@@ -41,14 +43,16 @@ export default function AddTransactionModal({
         setDate(new Date().toISOString().split("T")[0]);
         setPaymentMethod("upi");
       }
+      setSubmitError("");
+      setIsSubmitting(false);
     }
   }, [isOpen, initialType, editingTransaction]);
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!amount || Number(amount) <= 0) return;
+    if (!amount || Number(amount) <= 0 || isSubmitting) return;
 
     const txData = {
       type,
@@ -59,16 +63,31 @@ export default function AddTransactionModal({
       paymentMethod: paymentMethod.toLowerCase(),
     };
 
-    if (isEditing && onUpdateTransaction && editingTransaction?._id) {
-      onUpdateTransaction(editingTransaction._id, txData);
-    } else if (onAddTransaction) {
-      onAddTransaction(txData);
-    }
+    setIsSubmitting(true);
+    setSubmitError("");
 
-    // Reset & close
-    setAmount("");
-    setDescription("");
-    onClose();
+    try {
+      let success = false;
+
+      if (isEditing && onUpdateTransaction && editingTransaction?._id) {
+        success = await onUpdateTransaction(editingTransaction._id, txData);
+      } else if (onAddTransaction) {
+        success = await onAddTransaction(txData);
+      }
+
+      if (success) {
+        setAmount("");
+        setDescription("");
+        onClose();
+      } else {
+        setSubmitError("Could not save the transaction. Please try again.");
+      }
+    } catch (err) {
+      console.error("Transaction submit failed:", err);
+      setSubmitError("Could not save the transaction. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -222,13 +241,30 @@ export default function AddTransactionModal({
               </div>
             </div>
 
+            {submitError && (
+              <p className="modal-error" role="alert">
+                {submitError}
+              </p>
+            )}
+
             {/* Actions */}
             <div className="modal-actions">
-              <button type="button" className="modal-btn secondary" onClick={onClose}>
+              <button
+                type="button"
+                className="modal-btn secondary"
+                onClick={onClose}
+                disabled={isSubmitting}
+              >
                 Cancel
               </button>
-              <button type="submit" className="modal-btn primary">
-                {isEditing ? "Save Changes" : type === "income" ? "Add Income" : "Add Expense"}
+              <button type="submit" className="modal-btn primary" disabled={isSubmitting}>
+                {isSubmitting
+                  ? "Saving..."
+                  : isEditing
+                  ? "Save Changes"
+                  : type === "income"
+                  ? "Add Income"
+                  : "Add Expense"}
               </button>
             </div>
           </form>

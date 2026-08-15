@@ -45,9 +45,12 @@ export default function Dashboard() {
   const [editingTransaction, setEditingTransaction] = useState(null);
 
   // Load user data
-  const loadUserData = useCallback(async () => {
+  const loadUserData = useCallback(async ({ silent = false } = {}) => {
     try {
-      setLoading(true);
+      if (!silent) {
+        setLoading(true);
+      }
+
       const [txRes, goalsRes] = await Promise.allSettled([
         getTransactions(),
         getGoals(),
@@ -70,7 +73,9 @@ export default function Dashboard() {
     } catch (err) {
       console.error("Failed to load dashboard data:", err);
     } finally {
-      setLoading(false);
+      if (!silent) {
+        setLoading(false);
+      }
     }
   }, []);
 
@@ -114,32 +119,24 @@ export default function Dashboard() {
   // Handle adding new transaction
   const handleAddTransaction = async (newTxData) => {
     try {
-      const res = await createTransaction(newTxData);
-      if (res?.transaction) {
-        setTransactions((prev) => [res.transaction, ...prev]);
-      } else {
-        await loadUserData();
-      }
+      await createTransaction(newTxData);
+      await loadUserData({ silent: true });
+      return true;
     } catch (err) {
       console.error("Create transaction failed:", err);
-      await loadUserData();
+      return false;
     }
   };
 
   // Handle editing existing transaction
   const handleUpdateTransaction = async (id, updatedTxData) => {
     try {
-      const res = await updateTransaction(id, updatedTxData);
-      if (res?.transaction) {
-        setTransactions((prev) =>
-          prev.map((t) => (t._id === id ? res.transaction : t))
-        );
-      } else {
-        await loadUserData();
-      }
+      await updateTransaction(id, updatedTxData);
+      await loadUserData({ silent: true });
+      return true;
     } catch (err) {
       console.error("Update transaction failed:", err);
-      await loadUserData();
+      return false;
     }
   };
 
@@ -349,3 +346,4 @@ export default function Dashboard() {
     </div>
   );
 }
+

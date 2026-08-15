@@ -1,86 +1,120 @@
-import { Link } from "react-router-dom";
-import { FiArrowRight, FiCheckCircle, FiTrendingUp, FiInfo, FiAlertCircle } from "react-icons/fi";
+import {
+  FiCpu,
+  FiTrendingUp,
+  FiTrendingDown,
+  FiAlertCircle,
+  FiCheckCircle,
+  FiArrowRight
+} from "react-icons/fi";
 
-export default function AIInsightCard({ transactions = [], balance = 0, income = 0, expenses = 0 }) {
-  const hasData = transactions && transactions.length > 0;
-  const savings = income - expenses;
-  const savingsRate = income > 0 ? Math.round((savings / income) * 100) : 0;
+export default function AIInsightCard() {
+  const insights = [
+    {
+      type: "positive",
+      icon: <FiTrendingDown />,
+      title: "Great spending control",
+      text: "Your food expenses are 18% lower than last month."
+    },
+    {
+      type: "warning",
+      icon: <FiAlertCircle />,
+      title: "Budget alert",
+      text: "You're close to reaching your Entertainment budget."
+    },
+    {
+      type: "positive",
+      icon: <FiTrendingUp />,
+      title: "Savings opportunity",
+      text: "You could save around ₹3,200 this month by reducing subscriptions."
+    }
+  ];
 
   return (
     <div className="ai-insight-card">
+
+      {/* HEADER */}
+
       <div className="ai-insight-header">
-        <div className="ai-icon">✨</div>
+
+        <div className="ai-insight-title">
+
+          <div className="ai-icon">
+            <FiCpu />
+          </div>
+
+          <div>
+            <span>AI FINANCIAL ASSISTANT</span>
+            <h2>Smart Insights</h2>
+          </div>
+
+        </div>
+
+        <div className="ai-status">
+          <span></span>
+          AI Active
+        </div>
+
+      </div>
+
+      {/* MAIN MESSAGE */}
+
+      <div className="ai-main-insight">
+
+        <div className="ai-main-icon">
+          <FiCheckCircle />
+        </div>
 
         <div>
-          <span className="ai-label">MONEYMATE AI</span>
-          <h3>{hasData ? "Smart Financial Insight" : "Your Financial Assistant"}</h3>
+          <h3>Your finances look healthy</h3>
+
+          <p>
+            Based on your recent transactions, you're
+            spending less than you earn and your savings
+            are moving in the right direction.
+          </p>
         </div>
+
       </div>
 
-      <div className="ai-insight-content">
-        {!hasData ? (
-          <>
-            <div className="ai-insight-message">
-              <FiInfo className="insight-check" />
-              <p>
-                <strong>Welcome to MoneyMate AI! 👋</strong>
-                <br />
-                Add a few transactions and I'll analyze your spending, identify patterns, and provide personalized financial insights.
-              </p>
+      {/* INSIGHTS */}
+
+      <div className="ai-insights-list">
+
+        {insights.map((insight, index) => (
+
+          <div
+            className={`ai-insight-item ${insight.type}`}
+            key={index}
+          >
+
+            <div className="ai-item-icon">
+              {insight.icon}
             </div>
 
-            <div className="ai-insight-stat">
-              <div className="ai-stat-icon">
-                <FiTrendingUp />
-              </div>
-              <div>
-                <span>Getting Started</span>
-                <strong>0 transactions recorded</strong>
-              </div>
-            </div>
-          </>
-        ) : (
-          <>
-            <div className="ai-insight-message">
-              {savings >= 0 ? (
-                <FiCheckCircle className="insight-check" />
-              ) : (
-                <FiAlertCircle className="insight-check warning" />
-              )}
+            <div className="ai-item-content">
 
-              <p>
-                {savings >= 0 ? (
-                  <>
-                    You are saving <strong>{savingsRate}%</strong> of your income this period.
-                    Keep maintaining your smart spending habits!
-                  </>
-                ) : (
-                  <>
-                    Your expenses currently exceed income by <strong>₹{Math.abs(savings).toLocaleString("en-IN")}</strong>.
-                    Consider reviewing your top discretionary spending.
-                  </>
-                )}
-              </p>
+              <h4>{insight.title}</h4>
+
+              <p>{insight.text}</p>
+
             </div>
 
-            <div className="ai-insight-stat">
-              <div className="ai-stat-icon">
-                <FiTrendingUp />
-              </div>
+          </div>
 
-              <div>
-                <span>{savings >= 0 ? "Net Savings" : "Deficit"}</span>
-                <strong>₹{Math.abs(savings).toLocaleString("en-IN")}</strong>
-              </div>
-            </div>
-          </>
-        )}
+        ))}
+
       </div>
 
-      <Link to="/ai-insights" className="ai-insight-button">
-        View AI Insights
+      {/* FOOTER */}
+
+      <button className="view-ai-insights">
+
+        View Full AI Analysis
+
         <FiArrowRight />
-      </Link>
+
+      </button>
+
     </div>
   );
 }
