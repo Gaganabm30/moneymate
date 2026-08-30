@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { RiMenu2Line, RiSearch2Line, RiBellLine, RiSettings4Line } from "react-icons/ri";
+import { RiMenu2Line, RiSearch2Line, RiBellLine } from "react-icons/ri";
 import { useAuth } from "../../context/AuthContext";
 import "../../styles/topbar.css";
 
@@ -10,7 +10,6 @@ const PAGE_TITLES = {
   "/analytics":    { greeting: "Money intelligence", title: "Analytics" },
   "/goals":        { greeting: "Make it happen", title: "Goals" },
   "/profile":      { greeting: "Your account", title: "Profile" },
-  "/settings":     { greeting: "Preferences", title: "Settings" },
 };
 
 function Navbar({ onMenuClick }) {
@@ -49,10 +48,6 @@ function Navbar({ onMenuClick }) {
       </div>
 
       <div className="topbar-right">
-        <Link to="/settings" className="topbar-icon-btn" aria-label="Settings">
-          <RiSettings4Line />
-        </Link>
-
         <button className="topbar-icon-btn" aria-label="Notifications">
           <RiBellLine />
           <span className="notif-dot" />

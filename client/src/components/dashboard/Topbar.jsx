@@ -2,7 +2,6 @@ import {
   FiBell,
   FiSearch,
   FiChevronDown,
-  FiSettings,
   FiMenu
 } from "react-icons/fi";
 
@@ -35,7 +34,7 @@ export default function Topbar({ searchQuery = "", onSearchChange, onToggleMobil
         </div>
       </div>
 
-      {/* RIGHT: Notifications, Settings, Profile */}
+      {/* RIGHT: Notifications, Profile */}
       <div className="topbar-right">
         <button
           className="topbar-icon-btn notification-btn"
@@ -43,13 +42,6 @@ export default function Topbar({ searchQuery = "", onSearchChange, onToggleMobil
         >
           <FiBell />
           <span className="notification-dot"></span>
-        </button>
-
-        <button
-          className="topbar-icon-btn"
-          aria-label="Settings"
-        >
-          <FiSettings />
         </button>
 
         <div className="topbar-profile">

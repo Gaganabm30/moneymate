@@ -1,14 +1,67 @@
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { FiTarget, FiPlus, FiArrowRight } from "react-icons/fi";
+import { FiTarget, FiPlus } from "react-icons/fi";
+import { getGoals } from "../../services/goalService";
 
-const goals = [
-  { id: 1, name: "New Laptop", saved: 42000, target: 60000, deadline: "Oct 2026", color: "#5B67F1" },
-  { id: 2, name: "Emergency Fund", saved: 75000, target: 100000, deadline: "Dec 2026", color: "#8B5CF6" },
-  { id: 3, name: "Vacation Trip", saved: 25000, target: 50000, deadline: "Nov 2026", color: "#16A36A" },
-];
+const formatDisplayDate = (dateStr) => {
+  if (!dateStr) return "No deadline";
+  try {
+    return new Date(dateStr).toLocaleDateString("en-IN", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    });
+  } catch {
+    return String(dateStr).slice(0, 10);
+  }
+};
 
 export default function SavingsGoals() {
+  const [goals, setGoals] = useState([]);
+
+  const loadData = useCallback(async () => {
+    try {
+      const data = await getGoals();
+      setGoals(data);
+    } catch (err) {
+      console.error("SavingsGoals load error:", err);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
+
+  const displayedGoals = useMemo(() => {
+    return goals.slice(0, 3).map((g) => {
+      const target = Number(g.target) || 0;
+      const saved = Number(g.saved) || 0;
+      const percentage = target > 0 ? Math.round((saved / target) * 100) : 0;
+      const displayPercentage = Math.min(percentage, 100);
+      const isCompleted = saved >= target && target > 0;
+
+      const color =
+        (g.category || "").toLowerCase().includes("tech")
+          ? "#5B67F1"
+          : (g.category || "").toLowerCase().includes("travel")
+          ? "#F59E0B"
+          : "#8B5CF6";
+
+      return {
+        id: g._id || g.id,
+        name: g.title,
+        saved,
+        target,
+        deadline: formatDisplayDate(g.deadline),
+        pct: percentage,
+        displayPct: displayPercentage,
+        isCompleted,
+        color,
+      };
+    });
+  }, [goals]);
+
   return (
     <motion.div
       className="dashboard-card savings-goals-card"
@@ -27,13 +80,22 @@ export default function SavingsGoals() {
       </div>
 
       <div className="goals-items-list">
-        {goals.map((g) => {
-          const pct = Math.round((g.saved / g.target) * 100);
-          return (
+        {displayedGoals.length === 0 ? (
+          <p style={{ color: "#8c98a9", fontSize: "13px", padding: "12px 0" }}>
+            No savings goals created yet.
+          </p>
+        ) : (
+          displayedGoals.map((g) => (
             <div key={g.id} className="goal-item-box">
               <div className="goal-item-header">
                 <div className="goal-title-group">
-                  <div className="goal-icon-badge" style={{ backgroundColor: `${g.color}15`, color: g.color }}>
+                  <div
+                    className="goal-icon-badge"
+                    style={{
+                      backgroundColor: `${g.color}15`,
+                      color: g.color,
+                    }}
+                  >
                     <FiTarget />
                   </div>
                   <div>
@@ -41,23 +103,29 @@ export default function SavingsGoals() {
                     <span className="goal-deadline">Deadline: {g.deadline}</span>
                   </div>
                 </div>
-                <span className="goal-pct">{pct}%</span>
+                <span className="goal-pct">{g.pct}%</span>
               </div>
 
               <div className="goal-progress-track">
                 <div
                   className="goal-progress-fill"
-                  style={{ width: `${pct}%`, backgroundColor: g.color }}
+                  style={{
+                    width: `${g.displayPct}%`,
+                    backgroundColor: g.isCompleted ? "#10B981" : g.color,
+                  }}
                 />
               </div>
 
               <div className="goal-amounts-footer">
-                <span>Saved: <strong>₹{g.saved.toLocaleString("en-IN")}</strong></span>
+                <span>
+                  Saved:{" "}
+                  <strong>₹{g.saved.toLocaleString("en-IN")}</strong>
+                </span>
                 <span>Target: ₹{g.target.toLocaleString("en-IN")}</span>
               </div>
             </div>
-          );
-        })}
+          ))
+        )}
       </div>
     </motion.div>
   );

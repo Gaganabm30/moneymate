@@ -3,7 +3,10 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 
-// Load .env FIRST
+const path = require("path");
+
+// Load .env FIRST (checks both current folder and server dir)
+dotenv.config({ path: path.join(__dirname, ".env") });
 dotenv.config();
 
 const connectDB = require("./config/db");

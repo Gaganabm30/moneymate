@@ -7,7 +7,6 @@ import {
   FiTarget,
   FiCpu,
   FiBarChart2,
-  FiSettings,
   FiUser,
   FiLogOut,
   FiX
@@ -71,11 +70,6 @@ export default function Sidebar({ isOpen, onClose }) {
     {
       title: "ACCOUNT",
       items: [
-        {
-          name: "Settings",
-          path: "/settings",
-          icon: <FiSettings />
-        },
         {
           name: "Profile",
           path: "/profile",

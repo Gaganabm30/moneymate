@@ -8,15 +8,11 @@ import StatCard from "../components/dashboard/StatCard";
 import ExpenseChart from "../components/dashboard/ExpenseChart";
 import AIInsightCard from "../components/dashboard/AIInsightCard";
 import RecentTransactions from "../components/dashboard/RecentTransactions";
-import AddTransactionModal from "../components/dashboard/AddTransactionModal";
+import AddTransactionModal from "../components/transactions/AddTransactionModal";
+import DeleteConfirmModal from "../components/transactions/DeleteConfirmModal";
 
 import { useAuth } from "../context/AuthContext";
-import {
-  getTransactions,
-  createTransaction,
-  updateTransaction,
-  deleteTransaction,
-} from "../services/transactionService";
+import { getTransactions, createTransaction, updateTransaction, deleteTransaction } from "../services/transactionService";
 import { getGoals } from "../services/goalService";
 
 import {
@@ -35,7 +31,6 @@ export default function Dashboard() {
 
   const [transactions, setTransactions] = useState([]);
   const [goals, setGoals] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
@@ -44,38 +39,21 @@ export default function Dashboard() {
   const [modalType, setModalType] = useState("expense");
   const [editingTransaction, setEditingTransaction] = useState(null);
 
-  // Load user data
-  const loadUserData = useCallback(async ({ silent = false } = {}) => {
-    try {
-      if (!silent) {
-        setLoading(true);
-      }
+  // Delete Confirm State
+  const [deletingTransaction, setDeletingTransaction] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
-      const [txRes, goalsRes] = await Promise.allSettled([
+  // Load user data from API
+  const loadUserData = useCallback(async () => {
+    try {
+      const [txList, goalsList] = await Promise.all([
         getTransactions(),
         getGoals(),
       ]);
-
-      if (txRes.status === "fulfilled" && txRes.value) {
-        // Backend returns { success: true, count: N, transactions: [...] } or array
-        const txList =
-          txRes.value.transactions ||
-          (Array.isArray(txRes.value) ? txRes.value : []);
-        setTransactions(txList);
-      }
-
-      if (goalsRes.status === "fulfilled" && goalsRes.value) {
-        const goalsList = Array.isArray(goalsRes.value)
-          ? goalsRes.value
-          : goalsRes.value.goals || [];
-        setGoals(goalsList);
-      }
+      setTransactions(txList);
+      setGoals(goalsList);
     } catch (err) {
       console.error("Failed to load dashboard data:", err);
-    } finally {
-      if (!silent) {
-        setLoading(false);
-      }
     }
   }, []);
 
@@ -85,72 +63,70 @@ export default function Dashboard() {
 
   // Compute Financial Overview
   const financialData = useMemo(() => {
-    let income = 0;
-    let expenses = 0;
+    const income = transactions
+      .filter((tx) => tx.type === "income")
+      .reduce((sum, tx) => sum + (Number(tx.amount) || 0), 0);
 
-    (transactions || []).forEach((t) => {
-      const amt = Math.abs(Number(t.amount) || 0);
-      const isIncome = t.type ? t.type === "income" : Number(t.amount) > 0;
-      if (isIncome) {
-        income += amt;
-      } else {
-        expenses += amt;
-      }
-    });
+    const expenses = transactions
+      .filter((tx) => tx.type === "expense")
+      .reduce((sum, tx) => sum + (Number(tx.amount) || 0), 0);
 
     const balance = income - expenses;
+    const savings = balance > 0 ? balance : 0;
 
-    // Total target savings goal amount from active goals
-    const totalGoalAmount = (goals || []).reduce((sum, g) => {
-      return sum + (Number(g.targetAmount) || Number(g.target) || 0);
-    }, 0);
+    const totalGoalAmount = goals.reduce(
+      (sum, g) => sum + (Number(g.target) || Number(g.targetAmount) || 0),
+      0
+    );
 
     return {
       balance,
       income,
       expenses,
-      savings: balance,
+      savings,
       savingsGoal: totalGoalAmount,
       transactionsCount: transactions.length,
       goalsCount: goals.length,
     };
   }, [transactions, goals]);
 
-  // Handle adding new transaction
-  const handleAddTransaction = async (newTxData) => {
+  // Handle adding / editing transaction from modal
+  const handleModalSubmit = async (formData, idToUpdate) => {
     try {
-      await createTransaction(newTxData);
-      await loadUserData({ silent: true });
-      return true;
+      if (idToUpdate) {
+        await updateTransaction(idToUpdate, formData);
+      } else {
+        await createTransaction(formData);
+      }
+      await loadUserData();
     } catch (err) {
-      console.error("Create transaction failed:", err);
-      return false;
+      console.error("Failed to save transaction:", err);
     }
   };
 
-  // Handle editing existing transaction
-  const handleUpdateTransaction = async (id, updatedTxData) => {
-    try {
-      await updateTransaction(id, updatedTxData);
-      await loadUserData({ silent: true });
-      return true;
-    } catch (err) {
-      console.error("Update transaction failed:", err);
-      return false;
+  // Open delete confirm modal
+  const handleDeleteTransaction = (id) => {
+    const tx = transactions.find(
+      (t) => String(t._id || t.id) === String(id)
+    );
+    if (tx) {
+      setDeletingTransaction(tx);
     }
   };
 
-  // Handle deleting transaction
-  const handleDeleteTransaction = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this transaction?")) {
-      return;
-    }
+  const handleConfirmDelete = async () => {
+    if (!deletingTransaction) return;
+    setIsDeleting(true);
     try {
-      await deleteTransaction(id);
-      setTransactions((prev) => prev.filter((t) => t._id !== id));
+      await deleteTransaction(
+        deletingTransaction._id || deletingTransaction.id
+      );
+      await loadUserData();
+      setDeletingTransaction(null);
     } catch (err) {
       console.error("Delete transaction failed:", err);
-      await loadUserData();
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -340,10 +316,19 @@ export default function Dashboard() {
           setIsModalOpen(false);
           setEditingTransaction(null);
         }}
-        onAddTransaction={handleAddTransaction}
-        onUpdateTransaction={handleUpdateTransaction}
+        onSubmit={handleModalSubmit}
+      />
+
+      {/* ================= DELETE CONFIRM MODAL ================= */}
+      <DeleteConfirmModal
+        isOpen={Boolean(deletingTransaction)}
+        onClose={() => setDeletingTransaction(null)}
+        onConfirm={handleConfirmDelete}
+        transactionTitle={
+          deletingTransaction?.title || deletingTransaction?.description
+        }
+        isDeleting={isDeleting}
       />
     </div>
   );
 }
-

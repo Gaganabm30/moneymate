@@ -115,15 +115,6 @@ export default function App() {
           }
         />
 
-        <Route
-          path="/settings"
-          element={
-            <ProtectedRoute>
-              <Profile />
-            </ProtectedRoute>
-          }
-        />
-
 
         {/* =========================
             404

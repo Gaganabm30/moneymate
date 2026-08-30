@@ -8,24 +8,35 @@ const goalSchema = new mongoose.Schema(
       required: true,
     },
 
-    name: {
+    // Support both "name" (old) and "title" (frontend) — stored as "title"
+    title: {
       type: String,
       required: true,
+      trim: true,
     },
 
-    targetAmount: {
+    category: {
+      type: String,
+      default: "Savings",
+      trim: true,
+    },
+
+    // The amount the user wants to save
+    target: {
       type: Number,
       required: true,
       min: 1,
     },
 
-    savedAmount: {
+    // How much has been saved so far
+    saved: {
       type: Number,
       default: 0,
       min: 0,
     },
 
-    targetDate: {
+    // Target completion date
+    deadline: {
       type: Date,
     },
   },

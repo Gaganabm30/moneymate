@@ -7,7 +7,6 @@ import {
   RiBarChart2Line,
   RiFlag2Line,
   RiUserLine,
-  RiSettings4Line,
   RiLogoutBoxRLine,
 } from "react-icons/ri";
 
@@ -24,7 +23,6 @@ const NAV_ITEMS = [
 
 const BOTTOM_ITEMS = [
   { to: "/profile",  icon: <RiUserLine />,     label: "Profile" },
-  { to: "/settings", icon: <RiSettings4Line />, label: "Settings" },
 ];
 
 const sidebarVariants = {
