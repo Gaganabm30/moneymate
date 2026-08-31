@@ -1,4 +1,4 @@
-import { NavLink, Link } from "react-router-dom";
+import { NavLink, Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   RiDashboardLine,
@@ -39,11 +39,18 @@ const itemVariants = {
 };
 
 function Sidebar({ isOpen, onClose }) {
+  const navigate = useNavigate();
   const { user, logout } = useAuth();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
 
   const initials = user?.name
     ? user.name.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2)
     : "M";
+
 
   return (
     <>
@@ -119,7 +126,7 @@ function Sidebar({ isOpen, onClose }) {
               <span>{user?.email || ""}</span>
             </div>
           </div>
-          <button className="sidebar-logout-btn" onClick={logout}>
+          <button className="sidebar-logout-btn" onClick={handleLogout}>
             <span className="sidebar-link-icon"><RiLogoutBoxRLine /></span>
             Sign out
           </button>

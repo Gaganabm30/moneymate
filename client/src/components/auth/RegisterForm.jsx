@@ -78,7 +78,17 @@ export default function RegisterForm() {
       navigate("/dashboard");
     } catch (err) {
       console.error("Registration error:", err);
-      setError(err?.response?.data?.message || "Registration failed. An account with this email may already exist.");
+      if (err?.response?.data?.message) {
+        setError(err.response.data.message);
+      } else if (err?.code === "ERR_NETWORK" || !err?.response) {
+        setError("Unable to connect to server.");
+      } else if (err?.response?.status === 409) {
+        setError("Email already registered.");
+      } else if (err?.response?.status >= 500) {
+        setError("Server error. Please try again later.");
+      } else {
+        setError("Registration failed. Please check your details.");
+      }
     } finally {
       setLoading(false);
     }

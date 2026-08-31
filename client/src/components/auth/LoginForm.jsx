@@ -27,7 +27,17 @@ export default function LoginForm() {
       navigate("/dashboard");
     } catch (err) {
       console.error("Login error:", err);
-      setError(err?.response?.data?.message || "Invalid email or password. Please try again.");
+      if (err?.response?.data?.message) {
+        setError(err.response.data.message);
+      } else if (err?.code === "ERR_NETWORK" || !err?.response) {
+        setError("Unable to connect to server.");
+      } else if (err?.response?.status === 401) {
+        setError("Invalid email or password.");
+      } else if (err?.response?.status >= 500) {
+        setError("Server error. Please try again later.");
+      } else {
+        setError("Invalid email or password.");
+      }
     } finally {
       setLoading(false);
     }
@@ -86,7 +96,10 @@ export default function LoginForm() {
 
         <button type="submit" className="auth-submit-btn" disabled={loading}>
           {loading ? (
-            <div className="spinner-sm" />
+            <>
+              <div className="spinner-sm" />
+              <span>Signing in...</span>
+            </>
           ) : (
             <>
               <span>Sign In</span>

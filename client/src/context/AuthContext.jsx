@@ -9,24 +9,25 @@ import {
   getCurrentUser,
   loginUser,
   registerUser,
-} from "../services/authService";
+  logoutUser,
+} from "../services/api";
 
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [token, setToken] = useState(() => localStorage.getItem("moneymate_token") || null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const restoreSession = async () => {
       try {
-        const token = localStorage.getItem(
-          "moneymate_token"
-        );
+        const storedToken = localStorage.getItem("moneymate_token");
 
         // No token = user is not logged in
-        if (!token) {
+        if (!storedToken) {
           setUser(null);
+          setToken(null);
           return;
         }
 
@@ -34,6 +35,7 @@ export const AuthProvider = ({ children }) => {
 
         if (response?.user) {
           setUser(response.user);
+          setToken(storedToken);
 
           localStorage.setItem(
             "moneymate_user",
@@ -57,6 +59,7 @@ export const AuthProvider = ({ children }) => {
         );
 
         setUser(null);
+        setToken(null);
       } finally {
         // CRITICAL:
         // Loading must ALWAYS stop.
@@ -70,17 +73,21 @@ export const AuthProvider = ({ children }) => {
   const register = async (formData) => {
     const response = await registerUser(formData);
 
-    localStorage.setItem(
-      "moneymate_token",
-      response.token
-    );
+    if (response?.token) {
+      localStorage.setItem(
+        "moneymate_token",
+        response.token
+      );
+      setToken(response.token);
+    }
 
-    localStorage.setItem(
-      "moneymate_user",
-      JSON.stringify(response.user)
-    );
-
-    setUser(response.user);
+    if (response?.user) {
+      localStorage.setItem(
+        "moneymate_user",
+        JSON.stringify(response.user)
+      );
+      setUser(response.user);
+    }
 
     return response;
   };
@@ -88,42 +95,43 @@ export const AuthProvider = ({ children }) => {
   const login = async (credentials) => {
     const response = await loginUser(credentials);
 
-    localStorage.setItem(
-      "moneymate_token",
-      response.token
-    );
+    if (response?.token) {
+      localStorage.setItem(
+        "moneymate_token",
+        response.token
+      );
+      setToken(response.token);
+    }
 
-    localStorage.setItem(
-      "moneymate_user",
-      JSON.stringify(response.user)
-    );
-
-    setUser(response.user);
+    if (response?.user) {
+      localStorage.setItem(
+        "moneymate_user",
+        JSON.stringify(response.user)
+      );
+      setUser(response.user);
+    }
 
     return response;
   };
 
   const logout = () => {
-    localStorage.removeItem(
-      "moneymate_token"
-    );
-
-    localStorage.removeItem(
-      "moneymate_user"
-    );
-
+    logoutUser();
+    localStorage.removeItem("moneymate_token");
+    localStorage.removeItem("moneymate_user");
     setUser(null);
+    setToken(null);
   };
 
   return (
     <AuthContext.Provider
       value={{
         user,
+        token,
         loading,
+        isAuthenticated: Boolean(user && token),
         register,
         login,
         logout,
-        isAuthenticated: Boolean(user),
       }}
     >
       {children}

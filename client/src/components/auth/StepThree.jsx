@@ -218,7 +218,10 @@ export default function StepThree({
           disabled={loading}
         >
           {loading ? (
-            <div className="spinner-sm" />
+            <>
+              <div className="spinner-sm" />
+              <span>Creating account...</span>
+            </>
           ) : (
             <>
               <FiStar className="btn-icon" />
