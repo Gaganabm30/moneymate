@@ -1,4 +1,4 @@
-﻿/* =========================================================
+/* =========================================================
    MONEYMATE AI — MODERN FINTECH DASHBOARD STYLES
    Pixel-perfect, ultra-clean, modern financial design system
    ========================================================= */
@@ -1308,6 +1308,227 @@
 }
 
 /* =========================================================
+   BOTTOM SECTION: RECENT TRANSACTIONS & UPCOMING BILLS
+   ========================================================= */
+
+.dashboard-bottom-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.8fr) minmax(320px, 1.1fr);
+  gap: 20px;
+  align-items: stretch;
+}
+
+.upcoming-bills-card {
+  background: #ffffff;
+  border: 1px solid var(--dash-border);
+  border-radius: var(--dash-radius-lg);
+  padding: 26px;
+  box-shadow: var(--dash-shadow-sm);
+  display: flex;
+  flex-direction: column;
+}
+
+.card-header-clean {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.card-header-clean h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 750;
+  color: var(--dash-text);
+  letter-spacing: -0.02em;
+}
+
+.view-all-link {
+  font-size: 12.5px;
+  font-weight: 650;
+  color: var(--dash-primary);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  background: var(--dash-primary-light);
+  transition: all 0.15s ease;
+}
+
+.view-all-link:hover {
+  background: #e4e0ff;
+  transform: translateX(2px);
+}
+
+.bills-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+}
+
+.bill-row-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  background: #f8fafc;
+  border: 1px solid #eef2f6;
+  border-radius: 12px;
+  transition: all 0.15s ease;
+}
+
+.bill-row-item:hover {
+  background: #f1f5f9;
+  border-color: #e2e8f0;
+}
+
+.bill-row-item.overdue-row {
+  background: #fff5f5;
+  border-color: #fed7d7;
+}
+
+.bill-row-item.today-row {
+  background: #fffdf0;
+  border-color: #feebc8;
+}
+
+.bill-left-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+
+.bill-left-icon.normal-icon {
+  background: #e0f2fe;
+  color: #0284c7;
+}
+
+.bill-left-icon.today-icon {
+  background: #fef3c7;
+  color: #d97706;
+}
+
+.bill-left-icon.overdue-icon {
+  background: #fee2e2;
+  color: #ef4444;
+}
+
+.bill-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.bill-details h4 {
+  margin: 0 0 2px;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--dash-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bill-details span {
+  font-size: 11.5px;
+  color: var(--dash-text-muted);
+}
+
+.bill-right-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: 12px;
+  flex-shrink: 0;
+}
+
+.bill-amount {
+  font-size: 14px;
+  font-weight: 750;
+  color: #0f172a;
+}
+
+.bill-pay-btn {
+  background: #10b981;
+  color: #ffffff;
+  border: none;
+  border-radius: 7px;
+  padding: 5px 10px;
+  font-size: 11.5px;
+  font-weight: 650;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  transition: background 0.15s ease;
+}
+
+.bill-pay-btn:hover:not(:disabled) {
+  background: #059669;
+}
+
+.bill-pay-btn.btn-overdue {
+  background: #ef4444;
+}
+
+.bill-pay-btn.btn-overdue:hover:not(:disabled) {
+  background: #dc2626;
+}
+
+.bills-widget-empty {
+  padding: 28px 16px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #64748b;
+  flex: 1;
+}
+
+.empty-check-icon {
+  font-size: 32px;
+  color: #10b981;
+  margin-bottom: 8px;
+}
+
+.bills-widget-empty p {
+  margin: 0 0 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #334155;
+}
+
+.widget-add-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--dash-primary);
+  text-decoration: none;
+}
+
+.widget-add-link:hover {
+  text-decoration: underline;
+}
+
+.bills-widget-loading {
+  padding: 30px;
+  text-align: center;
+  color: #94a3b8;
+  font-size: 13px;
+}
+
+/* =========================================================
    ADD TRANSACTION MODAL
    ========================================================= */
 
@@ -1575,6 +1796,10 @@
   }
 
   .dashboard-middle {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-bottom-grid {
     grid-template-columns: 1fr;
   }
 }

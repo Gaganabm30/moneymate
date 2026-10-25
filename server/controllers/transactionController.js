@@ -13,6 +13,7 @@ const createTransaction = async (req, res) => {
       type,
       amount,
       category,
+      title,
       description,
       paymentMethod,
       date,
@@ -56,7 +57,9 @@ const createTransaction = async (req, res) => {
 
       category: category.trim(),
 
-      description: description?.trim() || "",
+      title: title?.trim() || "",
+
+      description: description?.trim() || title?.trim() || "",
 
       paymentMethod: paymentMethod || "upi",
 

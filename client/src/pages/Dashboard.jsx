@@ -8,6 +8,7 @@ import StatCard from "../components/dashboard/StatCard";
 import ExpenseChart from "../components/dashboard/ExpenseChart";
 import AIInsightCard from "../components/dashboard/AIInsightCard";
 import RecentTransactions from "../components/dashboard/RecentTransactions";
+import UpcomingBills from "../components/dashboard/UpcomingBills";
 import AddTransactionModal from "../components/transactions/AddTransactionModal";
 import DeleteConfirmModal from "../components/transactions/DeleteConfirmModal";
 
@@ -296,14 +297,18 @@ export default function Dashboard() {
             />
           </div>
 
-          {/* ================= RECENT TRANSACTIONS ================= */}
-          <RecentTransactions
-            searchQuery={searchQuery}
-            transactions={transactions}
-            onAddTransactionClick={() => openAddModal("expense")}
-            onEditTransaction={openEditModal}
-            onDeleteTransaction={handleDeleteTransaction}
-          />
+          {/* ================= RECENT TRANSACTIONS & UPCOMING BILLS ================= */}
+          <div className="dashboard-bottom-grid">
+            <RecentTransactions
+              searchQuery={searchQuery}
+              transactions={transactions}
+              onAddTransactionClick={() => openAddModal("expense")}
+              onEditTransaction={openEditModal}
+              onDeleteTransaction={handleDeleteTransaction}
+            />
+
+            <UpcomingBills onActionSuccess={loadUserData} />
+          </div>
         </section>
       </main>
 

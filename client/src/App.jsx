@@ -14,6 +14,7 @@ import Goals from "./pages/Goals";
 import AIInsights from "./pages/AIInsights";
 import Analytics from "./pages/Analytics";
 import Profile from "./pages/Profile";
+import RecurringPayments from "./pages/RecurringPayments";
 
 // Authentication Guard
 import ProtectedRoute from "./components/common/ProtectedRoute";
@@ -75,6 +76,24 @@ export default function App() {
           element={
             <ProtectedRoute>
               <Budgets />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/recurring"
+          element={
+            <ProtectedRoute>
+              <RecurringPayments />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/recurring-payments"
+          element={
+            <ProtectedRoute>
+              <RecurringPayments />
             </ProtectedRoute>
           }
         />

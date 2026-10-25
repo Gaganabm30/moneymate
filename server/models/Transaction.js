@@ -27,6 +27,13 @@ const transactionSchema = new mongoose.Schema(
       trim: true,
     },
 
+    title: {
+      type: String,
+      trim: true,
+      maxlength: 120,
+      default: "",
+    },
+
     description: {
       type: String,
       trim: true,
@@ -68,6 +75,18 @@ const transactionSchema = new mongoose.Schema(
       default: false,
     },
 
+    recurringPaymentId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "RecurringPayment",
+      default: null,
+      index: true,
+    },
+
+    occurrenceDate: {
+      type: Date,
+      default: null,
+    },
+
     merchant: {
       type: String,
       trim: true,
@@ -89,6 +108,12 @@ const transactionSchema = new mongoose.Schema(
 transactionSchema.index({
   userId: 1,
   date: -1,
+});
+
+// Helps query occurrences from recurring schedules idempotently
+transactionSchema.index({
+  recurringPaymentId: 1,
+  occurrenceDate: 1,
 });
 
 // IMPORTANT:

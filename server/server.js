@@ -31,6 +31,24 @@ const analyticsRoutes = require(
   "./routes/analyticsRoutes"
 );
 
+const aiRoutes = require(
+  "./routes/aiRoutes"
+);
+
+const recurringRoutes = require(
+  "./routes/recurringRoutes"
+);
+
+const notificationRoutes = require(
+  "./routes/notificationRoutes"
+);
+
+const {
+  startRecurringScheduler,
+} = require(
+  "./services/recurringScheduler"
+);
+
 const {
   notFound,
   errorHandler,
@@ -142,6 +160,21 @@ app.use(
   analyticsRoutes
 );
 
+app.use(
+  "/api/ai",
+  aiRoutes
+);
+
+app.use(
+  "/api/recurring",
+  recurringRoutes
+);
+
+app.use(
+  "/api/notifications",
+  notificationRoutes
+);
+
 // ============================================
 // ERROR HANDLING
 // ============================================
@@ -160,6 +193,9 @@ const PORT =
 const startServer = async () => {
   try {
     await connectDB();
+
+    // Start background recurring payments and reminders scheduler
+    startRecurringScheduler();
 
     app.listen(PORT, () => {
       console.log("");

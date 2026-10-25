@@ -4,6 +4,7 @@ import {
   FiHome,
   FiCreditCard,
   FiPieChart,
+  FiRepeat,
   FiTarget,
   FiCpu,
   FiBarChart2,
@@ -39,6 +40,11 @@ export default function Sidebar({ isOpen, onClose }) {
           name: "Budgets",
           path: "/budgets",
           icon: <FiPieChart />
+        },
+        {
+          name: "Recurring Payments",
+          path: "/recurring",
+          icon: <FiRepeat />
         }
       ]
     },
