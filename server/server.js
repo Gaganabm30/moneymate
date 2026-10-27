@@ -152,63 +152,27 @@ app.get("/api/health", (req, res) => {
 });
 
 // ============================================
-// API ROUTES
+// API ROUTES (Supports both /api/* and /*)
 // ============================================
 
-app.use(
-  "/api/auth",
-  authRoutes
-);
+const appRoutes = [
+  ["/auth", authRoutes],
+  ["/transactions", transactionRoutes],
+  ["/budgets", budgetRoutes],
+  ["/goals", goalRoutes],
+  ["/analytics", analyticsRoutes],
+  ["/ai", aiRoutes],
+  ["/recurring", recurringRoutes],
+  ["/notifications", notificationRoutes],
+  ["/forecast", forecastingRoutes],
+  ["/reports", reportRoutes],
+  ["/challenges", challengeRoutes],
+];
 
-app.use(
-  "/api/transactions",
-  transactionRoutes
-);
-
-app.use(
-  "/api/budgets",
-  budgetRoutes
-);
-
-app.use(
-  "/api/goals",
-  goalRoutes
-);
-
-app.use(
-  "/api/analytics",
-  analyticsRoutes
-);
-
-app.use(
-  "/api/ai",
-  aiRoutes
-);
-
-app.use(
-  "/api/recurring",
-  recurringRoutes
-);
-
-app.use(
-  "/api/notifications",
-  notificationRoutes
-);
-
-app.use(
-  "/api/forecast",
-  forecastingRoutes
-);
-
-app.use(
-  "/api/reports",
-  reportRoutes
-);
-
-app.use(
-  "/api/challenges",
-  challengeRoutes
-);
+appRoutes.forEach(([prefix, router]) => {
+  app.use(`/api${prefix}`, router);
+  app.use(prefix, router);
+});
 
 // ============================================
 // ERROR HANDLING
