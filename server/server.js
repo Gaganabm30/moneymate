@@ -96,8 +96,9 @@ app.use(
       const isAllowedExplicit = allowedOrigins.includes(normalizedOrigin);
       const isLocalhost = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
       const isVercelDomain = /^https:\/\/[a-zA-Z0-9-_.]+\.vercel\.app$/.test(normalizedOrigin);
+      const isNetlifyDomain = /^https:\/\/[a-zA-Z0-9-_.]+\.netlify\.app$/.test(normalizedOrigin);
 
-      if (isAllowedExplicit || isLocalhost || isVercelDomain) {
+      if (isAllowedExplicit || isLocalhost || isVercelDomain || isNetlifyDomain) {
         return callback(null, true);
       }
 
