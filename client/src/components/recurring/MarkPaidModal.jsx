@@ -94,33 +94,43 @@ export default function MarkPaidModal({
               </div>
             </div>
 
-            <div className="tx-form-row two-col" style={{ marginTop: "16px" }}>
+            <div className="tx-form-grid" style={{ marginTop: "16px" }}>
               <div className="tx-form-group">
-                <label>
-                  <FiCalendar /> Payment Date
+                <label htmlFor="mark-paid-date">
+                  Payment Date <span className="req">*</span>
                 </label>
-                <input
-                  type="date"
-                  value={paidDate}
-                  onChange={(e) => setPaidDate(e.target.value)}
-                  required
-                />
+                <div className="tx-input-container">
+                  <FiCalendar className="tx-input-icon" />
+                  <input
+                    id="mark-paid-date"
+                    type="date"
+                    value={paidDate}
+                    onChange={(e) => setPaidDate(e.target.value)}
+                    className="tx-input"
+                    required
+                  />
+                </div>
               </div>
 
               <div className="tx-form-group">
-                <label>
-                  <FiCreditCard /> Payment Method
+                <label htmlFor="mark-paid-method">
+                  Payment Method
                 </label>
-                <select
-                  value={paymentMethod}
-                  onChange={(e) => setPaymentMethod(e.target.value)}
-                >
-                  {PAYMENT_METHODS.map((pm) => (
-                    <option key={pm.id} value={pm.id}>
-                      {pm.label}
-                    </option>
-                  ))}
-                </select>
+                <div className="tx-input-container">
+                  <FiCreditCard className="tx-input-icon" />
+                  <select
+                    id="mark-paid-method"
+                    value={paymentMethod}
+                    onChange={(e) => setPaymentMethod(e.target.value)}
+                    className="tx-input tx-select"
+                  >
+                    {PAYMENT_METHODS.map((pm) => (
+                      <option key={pm.id} value={pm.id}>
+                        {pm.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
               </div>
             </div>
 
@@ -133,7 +143,7 @@ export default function MarkPaidModal({
             <div className="tx-modal-actions">
               <button
                 type="button"
-                className="tx-modal-cancel-btn"
+                className="tx-btn-cancel tx-modal-cancel-btn"
                 onClick={onClose}
                 disabled={isSubmitting}
               >
@@ -141,7 +151,7 @@ export default function MarkPaidModal({
               </button>
               <button
                 type="submit"
-                className="tx-modal-submit-btn"
+                className="tx-btn-submit tx-modal-submit-btn"
                 style={{ background: "#10b981" }}
                 disabled={isSubmitting}
               >

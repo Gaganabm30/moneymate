@@ -43,6 +43,18 @@ const notificationRoutes = require(
   "./routes/notificationRoutes"
 );
 
+const forecastingRoutes = require(
+  "./routes/forecastingRoutes"
+);
+
+const reportRoutes = require(
+  "./routes/reportRoutes"
+);
+
+const challengeRoutes = require(
+  "./routes/challengeRoutes"
+);
+
 const {
   startRecurringScheduler,
 } = require(
@@ -62,27 +74,34 @@ const app = express();
 // MIDDLEWARE
 // ============================================
 
+const envClientUrls = (process.env.CLIENT_URL || "")
+  .split(",")
+  .map((url) => url.trim().replace(/\/+$/, ""))
+  .filter(Boolean);
+
 const allowedOrigins = [
-  process.env.CLIENT_URL,
+  ...envClientUrls,
   "http://localhost:5173",
   "http://localhost:5174",
   "http://127.0.0.1:5173",
   "http://127.0.0.1:5174",
-].filter(Boolean);
+];
 
 app.use(
   cors({
     origin(origin, callback) {
-      if (
-        !origin ||
-        allowedOrigins.includes(origin) ||
-        /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin)
-      ) {
-        callback(null, true);
-        return;
+      if (!origin) return callback(null, true);
+
+      const normalizedOrigin = origin.replace(/\/+$/, "");
+      const isAllowedExplicit = allowedOrigins.includes(normalizedOrigin);
+      const isLocalhost = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
+      const isVercelDomain = /^https:\/\/[a-zA-Z0-9-_.]+\.vercel\.app$/.test(normalizedOrigin);
+
+      if (isAllowedExplicit || isLocalhost || isVercelDomain) {
+        return callback(null, true);
       }
 
-      callback(new Error("Not allowed by CORS"));
+      callback(new Error(`Not allowed by CORS: ${origin}`));
     },
     credentials: true,
   })
@@ -173,6 +192,21 @@ app.use(
 app.use(
   "/api/notifications",
   notificationRoutes
+);
+
+app.use(
+  "/api/forecast",
+  forecastingRoutes
+);
+
+app.use(
+  "/api/reports",
+  reportRoutes
+);
+
+app.use(
+  "/api/challenges",
+  challengeRoutes
 );
 
 // ============================================

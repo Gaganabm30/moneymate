@@ -15,6 +15,9 @@ import AIInsights from "./pages/AIInsights";
 import Analytics from "./pages/Analytics";
 import Profile from "./pages/Profile";
 import RecurringPayments from "./pages/RecurringPayments";
+import FinancialForecast from "./pages/FinancialForecast";
+import FinancialReports from "./pages/FinancialReports";
+import SavingsChallenges from "./pages/SavingsChallenges";
 
 // Authentication Guard
 import ProtectedRoute from "./components/common/ProtectedRoute";
@@ -121,6 +124,33 @@ export default function App() {
           element={
             <ProtectedRoute>
               <Analytics />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/forecast"
+          element={
+            <ProtectedRoute>
+              <FinancialForecast />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/reports"
+          element={
+            <ProtectedRoute>
+              <FinancialReports />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/challenges"
+          element={
+            <ProtectedRoute>
+              <SavingsChallenges />
             </ProtectedRoute>
           }
         />

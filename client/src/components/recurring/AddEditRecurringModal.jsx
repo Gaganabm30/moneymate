@@ -320,152 +320,167 @@ export default function AddEditRecurringModal({
               </button>
             </div>
 
-            {/* Title & Amount Grid */}
-            <div className="tx-form-row two-col">
-              <div className="tx-form-group">
-                <label>
-                  <FiFileText /> Schedule Title
-                </label>
+            {/* Title */}
+            <div className="tx-form-group">
+              <label htmlFor="rec-title">
+                Schedule Title <span className="req">*</span>
+              </label>
+              <div className="tx-input-container">
+                <FiFileText className="tx-input-icon" />
                 <input
+                  id="rec-title"
                   type="text"
-                  placeholder="e.g., Netflix, Wifi Bill, Apartment Rent"
+                  placeholder="e.g., Netflix, Wifi Bill, Apartment Rent, SIP Investment"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
+                  className="tx-input"
                   maxLength={120}
+                  autoFocus
                   required
                 />
               </div>
+            </div>
 
+            {/* Amount & Category */}
+            <div className="tx-form-grid">
               <div className="tx-form-group">
-                <label>
-                  <FiDollarSign /> Amount (₹)
+                <label htmlFor="rec-amount">
+                  Amount (₹) <span className="req">*</span>
                 </label>
-                <div className="amount-input-wrapper">
-                  <span className="currency-prefix">₹</span>
+                <div className="tx-input-container">
+                  <span className="tx-currency-symbol">₹</span>
                   <input
+                    id="rec-amount"
                     type="number"
                     step="0.01"
                     min="0.01"
                     placeholder="0.00"
                     value={amount}
                     onChange={(e) => setAmount(e.target.value)}
+                    className="tx-input tx-input-amount"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="tx-form-group">
+                <label htmlFor="rec-category">
+                  Category <span className="req">*</span>
+                </label>
+                <div className="tx-input-container">
+                  <FiTag className="tx-input-icon" />
+                  <select
+                    id="rec-category"
+                    value={category}
+                    onChange={(e) => setCategory(e.target.value)}
+                    className="tx-input tx-select"
+                    required
+                  >
+                    {categories.map((cat) => (
+                      <option key={cat} value={cat}>
+                        {cat}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            {/* Frequency & Reminder Preference */}
+            <div className="tx-form-grid">
+              <div className="tx-form-group">
+                <label htmlFor="rec-frequency">
+                  Frequency <span className="req">*</span>
+                </label>
+                <div className="tx-input-container">
+                  <FiRepeat className="tx-input-icon" />
+                  <select
+                    id="rec-frequency"
+                    value={frequency}
+                    onChange={(e) => setFrequency(e.target.value)}
+                    className="tx-input tx-select"
+                    required
+                  >
+                    {FREQUENCIES.map((f) => (
+                      <option key={f.id} value={f.id}>
+                        {f.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <div className="tx-form-group">
+                <label htmlFor="rec-reminder">
+                  Reminder Preference
+                </label>
+                <div className="tx-input-container">
+                  <FiBell className="tx-input-icon" />
+                  <select
+                    id="rec-reminder"
+                    value={reminderDaysBefore}
+                    onChange={(e) => setReminderDaysBefore(Number(e.target.value))}
+                    className="tx-input tx-select"
+                  >
+                    {REMINDER_OPTIONS.map((opt) => (
+                      <option key={opt.value} value={opt.value}>
+                        {opt.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            {/* Dates: Start Date & Next Due Date */}
+            <div className="tx-form-grid">
+              <div className="tx-form-group">
+                <label htmlFor="rec-start-date">
+                  Start Date <span className="req">*</span>
+                </label>
+                <div className="tx-input-container">
+                  <FiCalendar className="tx-input-icon" />
+                  <input
+                    id="rec-start-date"
+                    type="date"
+                    value={startDate}
+                    onChange={(e) => handleStartDateChange(e.target.value)}
+                    className="tx-input"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="tx-form-group">
+                <label htmlFor="rec-next-due-date">
+                  Next Due Date <span className="req">*</span>
+                </label>
+                <div className="tx-input-container">
+                  <FiCalendar className="tx-input-icon" />
+                  <input
+                    id="rec-next-due-date"
+                    type="date"
+                    value={nextDueDate}
+                    onChange={(e) => setNextDueDate(e.target.value)}
+                    className="tx-input"
                     required
                   />
                 </div>
               </div>
             </div>
 
-            {/* Category & Frequency */}
-            <div className="tx-form-row two-col">
-              <div className="tx-form-group">
-                <label>
-                  <FiTag /> Category
-                </label>
+            {/* Payment Method */}
+            <div className="tx-form-group">
+              <label htmlFor="rec-payment-method">
+                Payment Method
+              </label>
+              <div className="tx-input-container">
+                <FiCreditCard className="tx-input-icon" />
                 <select
-                  value={category}
-                  onChange={(e) => setCategory(e.target.value)}
-                >
-                  {categories.map((cat) => (
-                    <option key={cat} value={cat}>
-                      {cat}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="tx-form-group">
-                <label>
-                  <FiRepeat /> Frequency
-                </label>
-                <select
-                  value={frequency}
-                  onChange={(e) => setFrequency(e.target.value)}
-                >
-                  {FREQUENCIES.map((f) => (
-                    <option key={f.id} value={f.id}>
-                      {f.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-
-            {/* Dates Row: Start Date & Next Due Date */}
-            <div className="tx-form-row two-col">
-              <div className="tx-form-group">
-                <label>
-                  <FiCalendar /> Start Date
-                </label>
-                <input
-                  type="date"
-                  value={startDate}
-                  onChange={(e) => handleStartDateChange(e.target.value)}
-                  required
-                />
-              </div>
-
-              <div className="tx-form-group">
-                <label>
-                  <FiCalendar /> Next Due Date
-                </label>
-                <input
-                  type="date"
-                  value={nextDueDate}
-                  onChange={(e) => setNextDueDate(e.target.value)}
-                  required
-                />
-              </div>
-            </div>
-
-            {/* Optional End Date */}
-            <div className="tx-form-group end-date-toggle-group">
-              <div className="end-date-header-row">
-                <label className="checkbox-toggle-label">
-                  <input
-                    type="checkbox"
-                    checked={hasEndDate}
-                    onChange={(e) => setHasEndDate(e.target.checked)}
-                  />
-                  <span>Has an end date (optional)</span>
-                </label>
-              </div>
-              {hasEndDate && (
-                <div style={{ marginTop: "8px" }}>
-                  <input
-                    type="date"
-                    value={endDate}
-                    onChange={(e) => setEndDate(e.target.value)}
-                    min={startDate}
-                  />
-                </div>
-              )}
-            </div>
-
-            {/* Reminder Preference & Payment Method */}
-            <div className="tx-form-row two-col">
-              <div className="tx-form-group">
-                <label>
-                  <FiBell /> Reminder Preference
-                </label>
-                <select
-                  value={reminderDaysBefore}
-                  onChange={(e) => setReminderDaysBefore(Number(e.target.value))}
-                >
-                  {REMINDER_OPTIONS.map((opt) => (
-                    <option key={opt.value} value={opt.value}>
-                      {opt.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="tx-form-group">
-                <label>
-                  <FiCreditCard /> Payment Method
-                </label>
-                <select
+                  id="rec-payment-method"
                   value={paymentMethod}
                   onChange={(e) => setPaymentMethod(e.target.value)}
+                  className="tx-input tx-select"
                 >
                   {PAYMENT_METHODS.map((pm) => (
                     <option key={pm.id} value={pm.id}>
@@ -476,14 +491,42 @@ export default function AddEditRecurringModal({
               </div>
             </div>
 
-            {/* Description */}
+            {/* Optional End Date Box */}
+            <div className="end-date-toggle-group">
+              <label className="checkbox-toggle-label">
+                <input
+                  type="checkbox"
+                  checked={hasEndDate}
+                  onChange={(e) => setHasEndDate(e.target.checked)}
+                />
+                <span>Set an end date for this schedule (optional)</span>
+              </label>
+              {hasEndDate && (
+                <div className="tx-input-container" style={{ marginTop: "10px" }}>
+                  <FiCalendar className="tx-input-icon" />
+                  <input
+                    type="date"
+                    value={endDate}
+                    onChange={(e) => setEndDate(e.target.value)}
+                    min={startDate}
+                    className="tx-input"
+                  />
+                </div>
+              )}
+            </div>
+
+            {/* Notes / Description */}
             <div className="tx-form-group">
-              <label>Optional Notes / Description</label>
+              <label htmlFor="rec-description">
+                Optional Notes / Description <span className="opt">(Optional)</span>
+              </label>
               <textarea
+                id="rec-description"
                 placeholder="Add subscription ID, billing link, or notes..."
                 rows="2"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
+                className="tx-input tx-textarea"
                 maxLength={500}
               />
             </div>
@@ -492,7 +535,7 @@ export default function AddEditRecurringModal({
             <div className="tx-modal-actions">
               <button
                 type="button"
-                className="tx-modal-cancel-btn"
+                className="tx-btn-cancel tx-modal-cancel-btn"
                 onClick={onClose}
                 disabled={isSubmitting}
               >
@@ -500,7 +543,7 @@ export default function AddEditRecurringModal({
               </button>
               <button
                 type="submit"
-                className="tx-modal-submit-btn"
+                className="tx-btn-submit tx-modal-submit-btn"
                 disabled={isSubmitting}
               >
                 {isSubmitting

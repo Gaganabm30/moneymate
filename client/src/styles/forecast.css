@@ -1,0 +1,967 @@
+/* =========================================================
+   MONEYMATE AI — FINANCIAL FORECASTING STYLES
+   ========================================================= */
+
+.forecast-page-content {
+  padding-bottom: 80px;
+}
+
+/* ── Header ── */
+.forecast-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+
+.forecast-header-left {
+  display: flex;
+  flex-direction: column;
+}
+
+.forecast-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(99, 91, 255, 0.1);
+  color: var(--dash-primary, #635bff);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  padding: 4px 12px;
+  border-radius: 20px;
+  margin-bottom: 8px;
+  width: fit-content;
+}
+
+.forecast-heading {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--dash-text, #0f172a);
+  margin: 0 0 4px;
+  letter-spacing: -0.02em;
+}
+
+.forecast-subtitle {
+  font-size: 14px;
+  color: #64748b;
+  margin: 0;
+}
+
+.forecast-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.forecast-sync-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 18px;
+  background: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 12px;
+  color: #475569;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  transition: all 0.2s ease;
+}
+
+.forecast-sync-btn:hover:not(:disabled) {
+  border-color: #635bff;
+  color: #635bff;
+  background: #f8fafc;
+}
+
+.forecast-sync-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ── Data Quality & Confidence Banner ── */
+.forecast-confidence-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-left: 4px solid #635bff;
+  border-radius: 14px;
+  padding: 14px 20px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+  flex-wrap: wrap;
+}
+
+.confidence-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.confidence-icon-box {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: rgba(99, 91, 255, 0.1);
+  color: #635bff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.confidence-meta h4 {
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 2px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.confidence-pill {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 10px;
+  letter-spacing: 0.03em;
+}
+
+.confidence-pill.high {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.confidence-pill.moderate {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+.confidence-pill.low {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.confidence-pill.insufficient {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.confidence-meta p {
+  font-size: 12px;
+  color: #64748b;
+  margin: 0;
+}
+
+.confidence-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.confidence-stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  font-size: 12px;
+  color: #64748b;
+}
+
+.confidence-stat-item strong {
+  font-size: 14px;
+  color: #0f172a;
+  font-weight: 700;
+}
+
+/* ── Low-Balance Warning Alert ── */
+.forecast-warning-card {
+  border-radius: 14px;
+  padding: 16px 20px;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  border: 1.5px solid;
+}
+
+.forecast-warning-card.caution {
+  background: #fffbeb;
+  border-color: #fde68a;
+  color: #92400e;
+}
+
+.forecast-warning-card.critical {
+  background: #fef2f2;
+  border-color: #fecaca;
+  color: #991b1b;
+}
+
+.warning-icon-wrapper {
+  font-size: 24px;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.warning-content {
+  flex: 1;
+}
+
+.warning-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+
+.warning-header-row h4 {
+  font-size: 15px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.warning-badge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 12px;
+}
+
+.forecast-warning-card.caution .warning-badge {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+.forecast-warning-card.critical .warning-badge {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.warning-desc {
+  font-size: 13px;
+  line-height: 1.5;
+  margin: 0 0 10px;
+}
+
+.warning-contributing-payments {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.contributing-label {
+  font-size: 12px;
+  font-weight: 600;
+  opacity: 0.85;
+}
+
+.contributing-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #ffffff;
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.warning-disclaimer {
+  font-size: 11px;
+  opacity: 0.8;
+  margin: 8px 0 0;
+  font-style: italic;
+}
+
+/* ── Overview Metrics Grid ── */
+.forecast-overview-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.forecast-stat-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 20px 18px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.forecast-stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+}
+
+.forecast-stat-card.highlight {
+  border-color: rgba(99, 91, 255, 0.3);
+  background: linear-gradient(180deg, #ffffff 0%, #fbfaff 100%);
+}
+
+.forecast-stat-card.highlight::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: #635bff;
+}
+
+.forecast-stat-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.forecast-stat-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+
+.forecast-stat-icon.purple {
+  background: rgba(99, 91, 255, 0.1);
+  color: #635bff;
+}
+
+.forecast-stat-icon.blue {
+  background: #eff6ff;
+  color: #3b82f6;
+}
+
+.forecast-stat-icon.green {
+  background: #f0fdf4;
+  color: #10b981;
+}
+
+.forecast-stat-icon.emerald {
+  background: #ecfdf5;
+  color: #059669;
+}
+
+.forecast-stat-icon.orange {
+  background: #fff7ed;
+  color: #ea580c;
+}
+
+.forecast-stat-tag {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 10px;
+  letter-spacing: 0.04em;
+  background: #f1f5f9;
+  color: #64748b;
+  text-transform: uppercase;
+}
+
+.forecast-stat-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #64748b;
+  margin-bottom: 4px;
+}
+
+.forecast-stat-value {
+  font-size: 22px;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.forecast-stat-value.negative {
+  color: #ef4444;
+}
+
+.forecast-stat-subtext {
+  font-size: 11px;
+  color: #94a3b8;
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* ── Interactive Chart Card ── */
+.forecast-chart-section {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+  margin-bottom: 24px;
+}
+
+.forecast-chart-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.chart-title-group h3 {
+  font-size: 18px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 4px;
+}
+
+.chart-title-group p {
+  font-size: 13px;
+  color: #64748b;
+  margin: 0;
+}
+
+.chart-controls-group {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+/* Horizon Pills */
+.horizon-toggle-pill {
+  display: flex;
+  background: #f1f5f9;
+  padding: 3px;
+  border-radius: 12px;
+  gap: 3px;
+}
+
+.horizon-btn {
+  padding: 6px 14px;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.horizon-btn.active {
+  background: #ffffff;
+  color: #635bff;
+  font-weight: 700;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+}
+
+/* Scenario Pills */
+.scenario-selector-pills {
+  display: flex;
+  background: #f1f5f9;
+  padding: 3px;
+  border-radius: 12px;
+  gap: 3px;
+}
+
+.scenario-pill-btn {
+  padding: 6px 12px;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.scenario-pill-btn.active {
+  background: #ffffff;
+  color: #0f172a;
+  font-weight: 700;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+}
+
+.scenario-pill-btn.active.conservative {
+  color: #b45309;
+}
+
+.scenario-pill-btn.active.higher-spending {
+  color: #dc2626;
+}
+
+/* Chart Container */
+.chart-container-box {
+  width: 100%;
+  height: 380px;
+  position: relative;
+}
+
+/* Custom Tooltip */
+.forecast-custom-tooltip {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 12px 14px;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);
+  min-width: 180px;
+}
+
+.tooltip-date {
+  font-size: 12px;
+  font-weight: 700;
+  color: #64748b;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.tooltip-badge {
+  font-size: 9px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 6px;
+  text-transform: uppercase;
+}
+
+.tooltip-badge.actual {
+  background: rgba(99, 91, 255, 0.12);
+  color: #635bff;
+}
+
+.tooltip-badge.projected {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.tooltip-metric-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 13px;
+  margin: 3px 0;
+}
+
+.tooltip-metric-row strong {
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.tooltip-events-list {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px dashed #e2e8f0;
+}
+
+.tooltip-event-chip {
+  font-size: 11px;
+  color: #ef4444;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 2px;
+}
+
+.tooltip-event-chip.income {
+  color: #10b981;
+}
+
+/* ── Scenario Comparison Cards ── */
+.forecast-scenarios-section {
+  margin-bottom: 24px;
+}
+
+.section-title-wrap {
+  margin-bottom: 14px;
+}
+
+.section-title-wrap h3 {
+  font-size: 18px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 4px;
+}
+
+.section-title-wrap p {
+  font-size: 13px;
+  color: #64748b;
+  margin: 0;
+}
+
+.scenarios-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.scenario-card {
+  background: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.scenario-card:hover {
+  border-color: #cbd5e1;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
+}
+
+.scenario-card.active {
+  border-color: #635bff;
+  box-shadow: 0 0 0 3px rgba(99, 91, 255, 0.15);
+  background: #fbfaff;
+}
+
+.scenario-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.scenario-name {
+  font-size: 15px;
+  font-weight: 800;
+  color: #0f172a;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.scenario-badge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+
+.scenario-badge.conservative {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+.scenario-badge.expected {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.scenario-badge.higher-spending {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.scenario-desc {
+  font-size: 12px;
+  color: #64748b;
+  margin: 0 0 14px;
+  line-height: 1.5;
+}
+
+.scenario-metrics-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #f1f5f9;
+}
+
+.scenario-metric-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.scenario-metric-item span {
+  font-size: 11px;
+  color: #94a3b8;
+  font-weight: 600;
+}
+
+.scenario-metric-item strong {
+  font-size: 16px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+/* ── Savings Goals Forecast ── */
+.forecast-goals-section {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+  margin-bottom: 24px;
+}
+
+.goals-forecast-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.goal-forecast-card {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.goal-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.goal-card-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.goal-status-pill {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 12px;
+}
+
+.goal-status-pill.on-track {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.goal-status-pill.behind-schedule {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.goal-status-pill.at-risk {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+.goal-status-pill.completed {
+  background: #e0e7ff;
+  color: #4338ca;
+}
+
+.goal-progress-bar-wrap {
+  width: 100%;
+  height: 8px;
+  background: #e2e8f0;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.goal-progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #635bff 0%, #8b5cf6 100%);
+  border-radius: 6px;
+  transition: width 0.4s ease;
+}
+
+.goal-amounts-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #64748b;
+}
+
+.goal-amounts-row strong {
+  color: #0f172a;
+}
+
+.goal-explanation {
+  font-size: 12px;
+  color: #475569;
+  line-height: 1.45;
+  background: #ffffff;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid #e9edf5;
+}
+
+/* ── Threshold Setting Card ── */
+.forecast-threshold-section {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+}
+
+.threshold-control-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+}
+
+.threshold-input-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.threshold-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.threshold-prefix {
+  position: absolute;
+  left: 14px;
+  font-weight: 700;
+  color: #64748b;
+  font-size: 15px;
+  pointer-events: none;
+}
+
+.threshold-input {
+  width: 180px;
+  height: 44px;
+  padding: 0 14px 0 36px;
+  background: #ffffff;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #0f172a;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.threshold-input:focus {
+  border-color: #635bff;
+  box-shadow: 0 0 0 3.5px rgba(99, 91, 255, 0.15);
+}
+
+.threshold-apply-btn {
+  padding: 11px 20px;
+  background: #635bff;
+  color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.threshold-apply-btn:hover {
+  background: #5348eb;
+}
+
+/* ── Empty State ── */
+.forecast-empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  background: #ffffff;
+  border: 1.5px dashed #cbd5e1;
+  border-radius: 20px;
+  margin: 30px 0;
+}
+
+.empty-icon-circle {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: rgba(99, 91, 255, 0.1);
+  color: #635bff;
+  font-size: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px;
+}
+
+.forecast-empty-state h3 {
+  font-size: 20px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 8px;
+}
+
+.forecast-empty-state p {
+  font-size: 14px;
+  color: #64748b;
+  max-width: 460px;
+  margin: 0 auto 20px;
+  line-height: 1.5;
+}
+
+/* ── Responsive Rules ── */
+@media (max-width: 1300px) {
+  .forecast-overview-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 900px) {
+  .scenarios-grid {
+    grid-template-columns: 1fr;
+  }
+  .forecast-overview-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .forecast-overview-grid {
+    grid-template-columns: 1fr;
+  }
+  .chart-controls-group {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .horizon-toggle-pill,
+  .scenario-selector-pills {
+    width: 100%;
+  }
+  .horizon-btn,
+  .scenario-pill-btn {
+    flex: 1;
+    text-align: center;
+  }
+  .chart-container-box {
+    height: 300px;
+  }
+}

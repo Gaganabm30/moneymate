@@ -6,11 +6,14 @@ import {
   FiPieChart,
   FiRepeat,
   FiTarget,
+  FiTrendingUp,
   FiCpu,
   FiBarChart2,
+  FiFileText,
   FiUser,
   FiLogOut,
-  FiX
+  FiX,
+  FiZap
 } from "react-icons/fi";
 
 export default function Sidebar({ isOpen, onClose }) {
@@ -55,6 +58,16 @@ export default function Sidebar({ isOpen, onClose }) {
           name: "Goals",
           path: "/goals",
           icon: <FiTarget />
+        },
+        {
+          name: "Challenges",
+          path: "/challenges",
+          icon: <FiZap />
+        },
+        {
+          name: "Forecast",
+          path: "/forecast",
+          icon: <FiTrendingUp />
         }
       ]
     },
@@ -70,6 +83,11 @@ export default function Sidebar({ isOpen, onClose }) {
           name: "Analytics",
           path: "/analytics",
           icon: <FiBarChart2 />
+        },
+        {
+          name: "Reports",
+          path: "/reports",
+          icon: <FiFileText />
         }
       ]
     },

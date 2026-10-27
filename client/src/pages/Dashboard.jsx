@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/dashboard.css";
+import "../styles/challenges.css";
 
 import Sidebar from "../components/dashboard/Sidebar";
 import Topbar from "../components/dashboard/Topbar";
@@ -9,6 +10,7 @@ import ExpenseChart from "../components/dashboard/ExpenseChart";
 import AIInsightCard from "../components/dashboard/AIInsightCard";
 import RecentTransactions from "../components/dashboard/RecentTransactions";
 import UpcomingBills from "../components/dashboard/UpcomingBills";
+import SavingsChallengeWidget from "../components/dashboard/SavingsChallengeWidget";
 import AddTransactionModal from "../components/transactions/AddTransactionModal";
 import DeleteConfirmModal from "../components/transactions/DeleteConfirmModal";
 
@@ -309,6 +311,9 @@ export default function Dashboard() {
 
             <UpcomingBills onActionSuccess={loadUserData} />
           </div>
+
+          {/* ================= SAVINGS CHALLENGE WIDGET ================= */}
+          <SavingsChallengeWidget />
         </section>
       </main>
 

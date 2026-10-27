@@ -5,9 +5,12 @@ import {
   RiExchangeDollarLine,
   RiPieChartLine,
   RiBarChart2Line,
+  RiLineChartLine,
+  RiFileTextLine,
   RiFlag2Line,
   RiUserLine,
   RiLogoutBoxRLine,
+  RiFlashlightLine,
 } from "react-icons/ri";
 
 import { useAuth } from "../../context/AuthContext";
@@ -19,6 +22,9 @@ const NAV_ITEMS = [
   { to: "/budgets",      icon: <RiPieChartLine />,       label: "Budgets" },
   { to: "/analytics",   icon: <RiBarChart2Line />,       label: "Analytics" },
   { to: "/goals",        icon: <RiFlag2Line />,           label: "Goals" },
+  { to: "/challenges",   icon: <RiFlashlightLine />,      label: "Challenges" },
+  { to: "/forecast",     icon: <RiLineChartLine />,      label: "Forecast" },
+  { to: "/reports",      icon: <RiFileTextLine />,       label: "Reports" },
 ];
 
 const BOTTOM_ITEMS = [

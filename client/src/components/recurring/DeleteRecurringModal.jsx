@@ -43,7 +43,7 @@ export default function DeleteRecurringModal({
             <div className="tx-modal-actions" style={{ marginTop: "24px" }}>
               <button
                 type="button"
-                className="tx-modal-cancel-btn"
+                className="tx-btn-cancel tx-modal-cancel-btn"
                 onClick={onClose}
                 disabled={isDeleting}
               >
@@ -51,7 +51,7 @@ export default function DeleteRecurringModal({
               </button>
               <button
                 type="button"
-                className="tx-modal-submit-btn delete-btn"
+                className="tx-btn-submit delete-btn tx-modal-submit-btn"
                 onClick={onConfirm}
                 disabled={isDeleting}
               >

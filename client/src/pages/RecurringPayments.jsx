@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
+import "../styles/dashboard.css";
 import "../styles/recurring.css";
 
 import Sidebar from "../components/dashboard/Sidebar";
